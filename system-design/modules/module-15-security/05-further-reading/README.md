@@ -1,0 +1,15 @@
+# Module 15 — Further Reading
+
+- **OWASP Top 10** (owasp.org/www-project-top-ten/) — the industry-standard, regularly-updated list of the most critical web application security risks (injection, broken access control, cryptographic failures, and more), maintained by the Open Worldwide Application Security Project. The single best starting point for understanding what actually goes wrong in real systems.
+- **OWASP API Security Top 10** (owasp.org/www-project-api-security/) — the API-specific companion list, including Broken Object Level Authorization (API1) referenced throughout this module as the most common real-world authorization bug.
+- **RFC 6749 — The OAuth 2.0 Authorization Framework** (datatracker.ietf.org/doc/html/rfc6749) — the original specification. Dense, but the authoritative source for exactly how each grant type is defined to work.
+- **RFC 7636 — Proof Key for Code Exchange (PKCE)** (datatracker.ietf.org/doc/html/rfc7636) — the original PKCE spec, defining the `code_verifier`/`code_challenge` mechanism covered in the deep dive.
+- **OpenID Connect Core 1.0** (openid.net/specs/openid-connect-core-1_0.html) — the OIDC specification, layering identity (`id_token`) on top of OAuth 2.0's authorization framework.
+- **Auth0 — "OAuth 2.0 and OpenID Connect (in plain English)"** (developer.auth0.com, Auth0 docs/blog) — a widely-used, practitioner-friendly explainer that's often the first thing engineers reach for before diving into the raw RFCs.
+- **NIST Special Publication 800-207 — Zero Trust Architecture** (nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-207.pdf) — the authoritative US government publication defining zero trust architecture, including the tenets this module's "never trust, always verify" framing is drawn from.
+- **GDPR official text and summary** (gdpr.eu and the EU's own eur-lex.europa.eu — Regulation (EU) 2016/679) — the official regulation text and a more readable practitioner summary; gdpr.eu's article-by-article breakdown is a good practical reference for data residency and right-to-erasure requirements.
+- **HHS — HIPAA Security Rule summary** (hhs.gov/hipaa/for-professionals/security/index.html) — the U.S. Department of Health and Human Services' official summary of HIPAA's Security Rule, covering the encryption, access control, and audit requirements referenced in the deep dive.
+- **HashiCorp — "What is Secrets Management?"** (developer.hashicorp.com/vault, HashiCorp's Vault documentation and engineering blog) — practical, vendor-authored but broadly applicable coverage of dynamic secrets, envelope encryption, and rotation, written by the team that built one of the most widely deployed secrets managers.
+- **Google Cloud — "BeyondCorp: A New Approach to Enterprise Security"** (cloud.google.com/beyondcorp and the original 2014 USENIX paper by Ward & Beyer) — Google's own account of moving to a zero-trust model internally, predating and informing much of the industry's current zero-trust vocabulary.
+
+→ Continue to [Module 16 — Real-Time Systems](../../module-16-real-time-systems/).

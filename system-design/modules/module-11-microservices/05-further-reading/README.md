@@ -1,0 +1,12 @@
+# Module 11 — Further Reading
+
+- **Sam Newman, *Building Microservices* (2nd edition, O'Reilly, 2021)** — the standard reference text on microservices architecture: decomposition, communication patterns, deployment, testing, and organizational implications, written by one of the practitioners who helped popularize the term.
+- **Chris Richardson, microservices.io** — a free, comprehensive pattern catalog covering decomposition strategies, the saga pattern, API composition, and the database-per-service pattern, maintained by the author of *Microservices Patterns* (Manning). The clearest single reference specifically for the saga choreography/orchestration distinction covered in this module's deep dive.
+- **Netflix Technology Blog — Hystrix and resilience engineering** — Netflix's own writeups on why they built Hystrix (the circuit breaker library that popularized the pattern at scale) and the broader resilience philosophy behind it, including bulkheading and fallback strategies in production.
+- **Istio documentation (istio.io/latest/docs/concepts/)** — official docs on service mesh concepts: traffic management, mTLS-based security, and observability, useful for grounding this module's service mesh section in how a real implementation works.
+- **Linkerd documentation (linkerd.io/2/overview/)** — a lighter-weight service mesh than Istio, with documentation that explains the same sidecar-proxy concepts with less operational surface area — useful for contrasting two real implementations of the same idea.
+- **Martin Fowler, "StranglerFigApplication" (martinfowler.com/bliki/StranglerFigApplication.html)** — the original short writeup naming and explaining the strangler fig migration pattern referenced in the deep dive.
+- **Martin Fowler / Sam Newman on "Backends For Frontends" (samnewman.io/patterns/architectural/bff/)** — Sam Newman's own pattern writeup on BFFs, including when the extra per-client-type service is and isn't worth the added maintenance surface.
+- **Pat Helland, "Life Beyond Distributed Transactions: An Apostate's Opinion" (2007)** — an influential, widely-cited paper arguing for the design philosophy behind giving up 2PC/distributed transactions in favor of independent, loosely-coupled services — useful primary-source grounding for *why* the saga pattern exists at all.
+
+→ Continue to [Module 12 — Distributed Systems](../../module-12-distributed-systems/).

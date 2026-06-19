@@ -1,0 +1,12 @@
+# Module 16 — Further Reading
+
+- **RFC 6455 — The WebSocket Protocol** (datatracker.ietf.org/doc/html/rfc6455) — the actual IETF standard defining the WebSocket handshake, framing format, and connection lifecycle covered in this module's concepts section. The primary source for "what is a WebSocket, precisely."
+- **MDN Web Docs — "Server-sent events"** (developer.mozilla.org/en-US/docs/Web/API/Server-sent_events) — the authoritative reference for the `EventSource` API, the `text/event-stream` wire format, and automatic reconnection behavior.
+- **MDN Web Docs — "The WebSocket API"** (developer.mozilla.org/en-US/docs/Web/API/WebSockets_API) — browser-side API reference that pairs well with RFC 6455's protocol-level spec.
+- **WhatsApp Engineering — "The WhatsApp Architecture Facebook Bought For $19 Billion"** and related WhatsApp engineering writing on its Erlang/ejabberd-based messaging core — practical, production-grade discussion of how a small engineering team scaled persistent connections and message delivery to hundreds of millions of users. Search the WhatsApp engineering blog and the highscalability.com archive for the original write-ups.
+- **Discord Engineering Blog** (discord.com/category/engineering) — multiple deep, specific posts on scaling real-time infrastructure, including "How Discord Stores Billions of Messages" and posts on scaling their Elixir/Rust-based real-time gateway and presence system to millions of concurrent WebSocket connections.
+- **Slack Engineering Blog** (slack.engineering) — posts on Slack's real-time messaging architecture, including how the Job Queue and the "Channel Server" model route messages to connected clients, and how presence is propagated across Slack's infrastructure.
+- **"Scaling WebSockets to Millions of Concurrent Connections"** — search the engineering blogs of companies operating large WebSocket fleets (Slack, Discord, PubNub, Ably) for current-generation discussion of connection-tier sizing, sticky sessions, and pub/sub fan-out — the concrete numbers and architectures referenced in this module's deep dive are drawn from the patterns described across this body of writing.
+- **Redis Documentation — "Pub/sub"** (redis.io/docs/latest/develop/interact/pubsub/) — the official reference for the Redis Pub/Sub mechanism used as the cross-server delivery backbone throughout this module's deep dive.
+
+→ Continue to [Module 17 — Data Pipelines](../../module-17-data-pipelines/).

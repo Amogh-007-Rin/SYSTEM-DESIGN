@@ -1,0 +1,31 @@
+# Module 06 — Common Interview Questions
+
+**Q1: What's the difference between vertical and horizontal scaling, and when would you choose each?**
+Vertical scaling adds more resources (CPU, RAM) to a single machine; horizontal scaling adds more machines and spreads load across them. Choose vertical scaling early on, or for workloads that are genuinely hard to distribute — it's simpler and introduces no new failure modes. Choose horizontal scaling once you hit vertical scaling's hard ceiling (there's a biggest machine you can buy), or when you need redundancy, since a single scaled-up machine is still a single point of failure.
+
+**Q2: Why does statelessness matter for horizontal scaling?**
+A stateless service holds no client-specific data in its own memory between requests, so any instance can handle any request. This is what lets a load balancer freely distribute traffic across instances and lets instances be added or removed without coordination. A stateful service (one holding sessions or in-memory data locally) needs sticky sessions or a shared external store to scale horizontally at all — added complexity that statelessness avoids by design.
+
+**Q3: Walk through the typical "scaling journey" a system follows as load grows.**
+Single server (app + DB together) → separate the database onto its own machine → add caching in front of the database → add multiple stateless app servers behind a load balancer → add database read replicas → shard the database once a single instance's write capacity or data size is the limit. Each stage solves the specific bottleneck the previous stage exposed; skipping stages (e.g., sharding before you've even added a cache) is a sign of over-engineering for the actual problem.
+
+**Q4: What does Amdahl's Law tell you about throwing more servers at a problem?**
+Amdahl's Law states that speedup from parallelization is capped at `1/(1-P)`, where P is the fraction of work that can be parallelized. The unparallelizable, serial portion of a workload bounds the maximum possible speedup no matter how many workers you add — a workload that's 90% parallelizable can never exceed a 10x speedup, even with infinite machines. This means identifying and shrinking a serial bottleneck (a single coordinating write, a global lock) is often more valuable than adding raw parallel capacity around it.
+
+**Q5: What is Little's Law, and how would you use it in a capacity-planning conversation?**
+Little's Law states `L = λW`: the average number of items in a system equals the arrival rate times the average time each item spends in the system. In a system design interview, you can use it to convert a requests-per-second estimate and an expected latency directly into a concurrency requirement — e.g., 1,000 req/sec at 200ms average latency means the system must support roughly 200 concurrent in-flight requests at any moment, which tells you how to size a thread pool or connection pool.
+
+**Q6: How do you tell whether a system is CPU-bound, I/O-bound, or memory-bound, and why does it matter?**
+CPU-bound systems show high CPU utilization with low I/O wait (heavy computation — encryption, image processing). I/O-bound systems show low CPU but high latency, with threads mostly waiting on disk/network/downstream calls. Memory-bound systems show rising latency from garbage collection pressure or outright crashes from running out of RAM. It matters because the fix is different for each: more horizontal capacity helps a CPU-bound system directly, but does little for an I/O-bound system waiting on one slow downstream dependency, and nothing for a memory leak that will eventually crash every instance regardless of count.
+
+**Q7: What's the difference between reactive and predictive auto-scaling?**
+Reactive scaling responds to a real-time metric crossing a threshold (e.g., CPU > 70%) and adds/removes capacity accordingly — simple, but has lag, since new instances take time to provision and warm up after the threshold is already crossed. Predictive scaling forecasts load ahead of time from historical patterns (e.g., known daily traffic spikes) and scales before the spike arrives, avoiding that lag — but it's only as good as the forecast, and a genuinely novel spike won't be predicted from history.
+
+**Q8: What's the difference between a database read replica and CQRS?**
+A read replica is a copy of the exact same schema, kept in sync asynchronously, used purely to scale read throughput — the data model is identical to the primary. CQRS (Command Query Responsibility Segregation) goes further: the write model (commands) and read model (queries) can be genuinely different schemas, or even different database technologies entirely, each shaped for what it needs to do well, kept in sync asynchronously. CQRS solves a modeling problem (reads and writes want different shapes), not just a throughput problem.
+
+**Q9: Why is eventual consistency described as a "scalability enabler" rather than purely a limitation?**
+Strong consistency requires coordination (consensus, locking, or synchronous replication) on every write, which adds latency and creates availability risk across multiple nodes or regions — a system that insisted on global strong consistency for every write would pay a synchronous cross-region round-trip per write. Eventual consistency accepts that replicas converge over time rather than instantly, removing that synchronous tax for data where brief staleness is tolerable (a like count, a follower count), which is frequently what makes scaling across nodes and regions feasible in the first place. It's a deliberate trade-off applied per piece of data, not a blanket excuse to ignore consistency.
+
+**Q10: A candidate proposes "just add more app servers" as the answer to every scaling question. What's missing from that answer?**
+It assumes the bottleneck is always app-server CPU/capacity, which often isn't true — the bottleneck might be a single database, a serial step no amount of parallel app servers can speed up (Amdahl's Law), or a stateful service that can't safely add instances without a shared session store. A strong answer first identifies *what specifically* is limiting the system, only then proposes the matching fix, and names the trade-off that fix introduces.

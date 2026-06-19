@@ -1,0 +1,31 @@
+# Module 12 — Common Interview Questions
+
+**Q1: Why are distributed systems fundamentally harder than single-machine systems?**
+Three structural reasons: partial failure (some nodes can fail while others keep running, unlike a single process where everything dies together), the absence of a global clock (you can't safely order events across machines by comparing wall-clock timestamps), and network unreliability (packets are dropped, delayed, duplicated, or reordered, and a timeout only tells you "I didn't hear back," not "the other side failed"). Every mechanism in this module exists to manage one of these three.
+
+**Q2: What's the difference between a Lamport timestamp and a vector clock?**
+A Lamport timestamp is a single counter per node that produces a partial order respecting causality (if A happened-before B, A's timestamp is smaller), but it cannot distinguish two genuinely concurrent, unrelated events from two events where one simply hasn't heard about the other yet. A vector clock tracks every node's counter, so comparing two vector clocks reveals the actual relationship — happened-before, happened-after, or truly concurrent — which is what's needed to detect real write conflicts instead of guessing.
+
+**Q3: What does R + W > N guarantee in a quorum-based system, and what does it NOT guarantee?**
+It guarantees that any read quorum of size R and any write quorum of size W, out of N total replicas, must overlap by at least one replica — so a read is guaranteed to see the most recent acknowledged write somewhere in its result set. It does NOT by itself tell you which of the values you read back is the newest one — you still need version metadata (a vector clock or timestamp) attached to each value to resolve that.
+
+**Q4: Why is Two-Phase Commit considered risky for production systems despite guaranteeing atomicity?**
+2PC is a blocking protocol: once a participant votes "yes" in the prepare phase, it must hold its locks and wait for the coordinator's final decision. If the coordinator crashes after collecting votes but before broadcasting the decision, every "yes" voter is stuck indefinitely, unable to safely decide commit or abort on its own. Most large systems avoid cross-node transactions entirely rather than accept this blocking risk.
+
+**Q5: What is a gossip protocol, and what are its two main uses in a distributed system?**
+A protocol where nodes periodically exchange state with a few random peers rather than relying on a central broadcaster, so information spreads through the cluster the way a rumor spreads through a social network — reaching everyone in roughly O(log N) rounds without any single point of failure. The two main uses are membership/node discovery (new nodes become known to the cluster organically) and failure detection (liveness information propagates so the whole cluster eventually agrees a node is down, without a central health-checker).
+
+**Q6: What's the actual controversy around Redlock?**
+Martin Kleppmann argued Redlock's safety relies on real-time assumptions (clock behavior, process scheduling) that can be violated by GC pauses or clock jumps, meaning a client can believe it still holds the lock after it has actually expired and been granted to someone else — and a lock alone can't stop a paused process from resuming and acting on stale authority unless every write also checks a fencing token. Redis's author defended Redlock's practical guarantees for typical use cases where this risk is acceptable. The lesson most engineers take away: distributed locks are fine for avoiding duplicate work, but need a fencing token to be trusted for actual correctness.
+
+**Q7: Why does idempotency matter so much in distributed systems specifically?**
+Because at-least-once delivery (the only guarantee many queues and retry policies offer) means the same logical operation can arrive more than once — a client retry after a timeout, a network duplicating a packet, or a queue redelivering an unacknowledged message. Designing operations to be idempotent (applying them twice has the same effect as applying them once, typically via a client-supplied idempotency key) means the system tolerates these duplicates safely instead of double-charging a payment or double-processing an order.
+
+**Q8: What's the practical difference between single-leader, multi-leader, and leaderless replication, and how would you choose?**
+Single-leader is simplest to reason about (one source of write ordering truth) but makes the leader a write bottleneck and single point of failure for writes during failover. Multi-leader allows local low-latency writes per region at the cost of needing conflict resolution between leaders. Leaderless maximizes write availability (no single node's failure blocks writes) but requires quorums and version metadata to give clients a coherent picture. Choose based on which failure you're least willing to accept: write unavailability during failover (avoid single-leader), conflicting writes (avoid multi-leader), or read/write complexity (avoid leaderless).
+
+**Q9: Why can't you just use the system clock to order events across two different servers?**
+Because every physical clock drifts — even with NTP, you should assume tens of milliseconds of disagreement between machines, and far worse during network or NTP daemon issues. Two events can be timestamped out of their true causal order purely due to clock skew, which makes wall-clock comparison unsafe for anything that needs a correctness guarantee (conflict resolution, transaction ordering). Logical clocks (Lamport, vector) solve this by tracking causality directly instead of trusting time.
+
+**Q10: What's the difference between causal order and total order, and why does the distinction matter practically?**
+Causal order only ranks events that actually influenced each other; unrelated events are left unordered because it doesn't matter for correctness which "came first." Total order ranks every event in the system relative to every other event, related or not, and is strictly more expensive to establish (it needs either a single sequencer or a consensus protocol). The practical lesson is to avoid paying for total order when your problem only needs causal order — most leaderless conflict detection (vector clocks) only ever needs the cheaper guarantee.
