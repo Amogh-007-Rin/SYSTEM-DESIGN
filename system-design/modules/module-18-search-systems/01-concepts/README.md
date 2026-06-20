@@ -25,7 +25,8 @@ A relational database index maps a column value to the rows that contain it. An 
 
 Now finding documents containing "fox" is a single hashmap lookup, not a scan. Multi-term queries ("quick fox") become **set intersection** or **union** of postings lists — intersection for AND semantics, union for OR semantics. This is exactly the data structure you'll build by hand in [Coding Challenge 02](../04-exercises/coding-challenges/challenge-02/).
 
-> 📊 **Diagram:** `inverted-index.drawio` — Shows two source documents being tokenized into terms, and the resulting inverted index mapping each unique term to its postings list of document IDs, alongside the equivalent slow forward-index scan it replaces.
+![Inverted index diagram](./diagrams/exports/inverted-index.png)
+*Two source documents tokenized into terms, and the resulting inverted index mapping each unique term to its postings list of document IDs.*
 
 Building the index applies a pipeline to every document first:
 1. **Tokenization** — split text into terms ("Running shoes!" → `["running", "shoes"]`)
@@ -109,7 +110,8 @@ Autocomplete predicts what the user is typing before they finish, both to save k
 - **Edge n-grams** — instead of a tree, index every *prefix* of a term as a separate token at indexing time ("shoes" → `s`, `sh`, `sho`, `shoe`, `shoes`). A query for "sho" becomes a normal exact-term lookup against the `sho` token — how Elasticsearch implements prefix matching using its standard inverted index machinery, no special tree structure needed.
 - **Completion suggester** — Elasticsearch's purpose-built autocomplete structure, an in-memory finite state transducer (FST) far more memory-efficient than edge n-grams at scale, with native fuzzy (typo-tolerant) prefix matching.
 
-> 📊 **Diagram:** `trie-autocomplete.drawio` — Shows a Trie built from a small weighted word list, with the traversal path for a sample prefix highlighted and the top-K highest-weighted completions under that node called out.
+![Trie-based autocomplete diagram](./diagrams/exports/trie-autocomplete.png)
+*A Trie built from a small weighted word list, with the traversal path for a sample prefix highlighted and the top-K highest-weighted completions under that node called out.*
 
 > 🎯 **Interview Tip:** Separate two different "top-K" problems: top-K *by prefix match* (what completions exist) and top-K *by weight* among those matches (which to actually show, ranked). A trie alone gives you the first; an additional weight per word plus an efficient way to retrieve the top-K weighted completions under a node gives you the second. This is exactly what you'll implement in Coding Challenge 01 and revisit at internet-scale in [Design Challenge 02](../04-exercises/design-challenges/challenge-02.md).
 

@@ -12,7 +12,8 @@ Searching "restaurants near me" is a fundamentally different question than text 
 
 **Geohashing** encodes a (latitude, longitude) pair into a single string by recursively subdividing the world into a grid: each additional character narrows the area by roughly a factor of 32. Geohashes sharing a long common prefix are usually nearby — `9q8yy` and `9q8yz` are close together, since subdividing a region preserves locality within it. "Find things near this point" becomes "find documents whose geohash shares a prefix with mine" — a prefix lookup against a normal inverted index, no special spatial structure required. A simplified encoder/decoder demonstrating this is in [`examples/geohash.ts`](./examples/geohash.ts).
 
-> 📊 **Diagram:** `geohash-grid.drawio` — Shows the world recursively subdivided into a geohash grid across two zoom levels, with two nearby points highlighted sharing a common cell prefix, and a third distant point falling under a completely different prefix.
+![Geohash grid diagram](../01-concepts/diagrams/exports/geohash-grid.png)
+*The world recursively subdivided into a geohash grid across two zoom levels: two nearby points share a common cell prefix, while a third, distant point falls under a completely different prefix.*
 
 > ⚠️ **Warning:** Two points can be geographically adjacent but fall on opposite sides of a grid cell boundary, ending up with completely different geohash prefixes despite being meters apart (worst near the equator and prime meridian, where grid cells flip). Production systems search neighboring cells too, not just the exact match, to compensate.
 
@@ -48,7 +49,8 @@ A search index is a derived view — the database (or event log) is the source o
 2. **Transformation** — apply tokenization rules, compute derived fields (a popularity score, a geohash from lat/lon), and shape the document into the index's mapping
 3. **Loading** — bulk-index transformed documents (Elasticsearch's `_bulk` API — batching is far more efficient than one document at a time)
 
-> 📊 **Diagram:** `search-indexing-pipeline.drawio` — Shows the flow from a source database, through an extraction/transformation stage that denormalizes joined data and computes derived fields, to a bulk-load step into Elasticsearch shards.
+![Search indexing pipeline diagram](../01-concepts/diagrams/exports/search-indexing-pipeline.png)
+*The flow from a source database, through an extraction/transformation stage that denormalizes joined data and computes derived fields, to a bulk-load step into Elasticsearch shards.*
 
 The first full index build (millions of documents) is typically a one-time **batch reindex**; afterward, the system needs an ongoing mechanism for keeping the index current as the database keeps changing.
 
