@@ -29,7 +29,8 @@ An L4 load balancer is a fast packet-forwarding switch — it never looks past t
 
 > 🎯 **Interview Tip:** If asked "L4 or L7 here?", ask what the routing decision actually depends on. "Spread connections evenly across identical backends" is an L4 job. "Send `/video/*` to one service and `/api/*` to another" is inherently L7 — L4 physically cannot see the path.
 
-> 📊 **Diagram:** `l4-vs-l7-load-balancing.drawio` — Shows the same client request flowing through an L4 load balancer (forwarding on IP/port only, blind to HTTP content) beside an L7 load balancer (terminating HTTP, reading the path/header, and routing to different backend pools accordingly).
+![L4 vs. L7 load balancing diagram](./diagrams/exports/l4-vs-l7-load-balancing.png)
+*The same client request flowing through an L4 load balancer (forwarding on IP/port only, blind to HTTP content) beside an L7 load balancer (terminating HTTP, reading the path/header, and routing to different backend pools accordingly).*
 
 ---
 
@@ -52,7 +53,8 @@ An L4 load balancer is a fast packet-forwarding switch — it never looks past t
 
 The [`examples/`](./examples/) directory implements Round Robin, Weighted Round Robin, and IP Hash so you can see the actual selection sequence each produces.
 
-> 📊 **Diagram:** `load-balancer-algorithms.drawio` — Shows one load balancer and four backend servers, with side-by-side request-sequence traces of how Round Robin, Weighted Round Robin (2:1:1:1), and Least Connections each assign the same 8 incoming requests differently.
+![Load balancing algorithms comparison diagram](./diagrams/exports/load-balancer-algorithms.png)
+*Three side-by-side panels showing how Round Robin, Weighted Round Robin, and Least Connections each assign traffic across the same backend pool differently.*
 
 ---
 
@@ -83,7 +85,8 @@ This is load balancing's central irony: you add a load balancer to remove any si
 - **Active-active** — multiple load balancers serve traffic simultaneously (split via DNS, a floating IP, or Anycast). No idle capacity, and one LB failing only reduces capacity instead of causing an outage.
 - **Floating IP** — a virtual IP reassigned at the network level from a failed load balancer to a healthy standby almost instantly, so clients keep using the same IP through a failover with no DNS propagation delay.
 
-> 📊 **Diagram:** `load-balancer-ha.drawio` — Shows an active-active load balancer HA setup: two LB instances both receiving traffic via a floating IP, each independently health-checking and forwarding to the same shared backend pool, so either LB failing only reduces capacity rather than causing an outage.
+![Load balancer HA active-active diagram](./diagrams/exports/load-balancer-ha.png)
+*An active-active load balancer HA setup: two LB instances both receiving traffic via a floating IP, each independently health-checking and forwarding to the same shared backend pool, so either LB failing only reduces capacity rather than causing an outage.*
 
 > 🎯 **Interview Tip:** If you propose "add a load balancer," immediately add "...running at least two, active-active, behind a floating IP, so the LB itself isn't a new single point of failure." That one sentence signals you're reasoning about the whole system's failure modes, not just the happy path.
 
