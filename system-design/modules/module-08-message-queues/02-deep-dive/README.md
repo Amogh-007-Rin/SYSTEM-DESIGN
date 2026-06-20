@@ -16,7 +16,8 @@ Each Kafka partition has one **leader** broker that handles all reads and writes
 
 **Consumer lag** is the gap between the latest offset written to a partition and the offset a consumer group has actually processed. It's the single most important Kafka health metric: rising lag means consumers can't keep up, and if uncaught, lag can grow until a consumer falls outside the retention window and permanently loses data it never got to.
 
-> 📊 **Diagram:** `kafka-architecture.drawio` — Shows a partition's leader broker, two follower brokers in its ISR, and a consumer group whose offset trails the partition's latest write (illustrating lag).
+![Kafka ISR and consumer lag diagram](../01-concepts/diagrams/exports/kafka-isr-and-lag.png)
+*A partition's leader broker, two follower brokers in its ISR, and a consumer group whose offset trails the partition's latest write — illustrating consumer lag.*
 
 ---
 
@@ -47,7 +48,8 @@ A classic reliability bug: a service updates its database (e.g., marks an order 
 
 The **outbox pattern** fixes this by writing the event into an `outbox` table in the *same database transaction* as the business write. A separate poller (or a change-data-capture process reading the database's write-ahead log) reads new outbox rows and publishes them to the broker, then marks them published. Because the business write and the outbox write are one atomic transaction, the event can never be "forgotten" — either both happen or neither does, and the publish step can be retried safely (the poller is itself just another at-least-once consumer of the outbox table, so it needs the same idempotency discipline).
 
-> 📊 **Diagram:** `outbox-pattern.drawio` — Shows a service writing both a business row and an outbox row in one transaction, with a separate poller reading unpublished outbox rows and publishing them to a message broker.
+![Outbox pattern diagram](../01-concepts/diagrams/exports/outbox-pattern.png)
+*A service writing both a business row and an outbox row in one transaction, with a separate poller reading unpublished outbox rows and publishing them to a message broker.*
 
 This module's [`examples/outbox-pattern.ts`](./examples/outbox-pattern.ts) simulates a transactional outbox table being polled and published.
 

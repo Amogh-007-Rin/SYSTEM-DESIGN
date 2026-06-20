@@ -15,6 +15,7 @@ Design an order processing system using event-driven architecture. The flow: **o
 5. Design for the failure case: payment succeeds but inventory reservation fails. What happens to the order, the customer's charge, and which compensating action(s) fire?
 6. At least 2 trade-offs.
 
-> 📊 **Diagram:** `event-driven-order-system.drawio` — Shows the order placed → payment → inventory → shipping → notification flow as named events flowing through a message broker, with each consuming service independent of the others.
+![Event-driven order processing diagram](../../01-concepts/diagrams/exports/event-driven-order-system.png)
+*The order placed → payment → inventory → shipping → notification flow as named events flowing through a message broker, with each consuming service independent of the others.*
 
 A full worked solution is in [`03-interview-prep/sample-answer.md`](../../03-interview-prep/sample-answer.md), which answers this exact prompt in depth.

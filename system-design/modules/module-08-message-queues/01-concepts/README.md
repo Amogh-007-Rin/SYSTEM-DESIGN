@@ -86,7 +86,8 @@ RabbitMQ is a traditional message **broker** built around the AMQP model. Produc
 
 A **dead letter queue (DLQ)** is where messages go after failing processing too many times (or being rejected, or expiring) instead of being retried forever or silently dropped. A DLQ gives you a place to inspect failed messages, alert on them, and reprocess them after fixing the bug, rather than losing them or blocking the queue indefinitely.
 
-> 📊 **Diagram:** `message-queue-vs-event-stream.drawio` — Shows a RabbitMQ-style point-to-point queue where one message is removed by one consumer side-by-side with a Kafka-style log where multiple consumer groups independently read the same retained messages from their own offsets.
+![Message queue vs. event stream comparison diagram](./diagrams/exports/message-queue-vs-event-stream.png)
+*A RabbitMQ-style point-to-point queue where one message is removed by one consumer, side-by-side with a Kafka-style log where multiple consumer groups independently read the same retained messages from their own offsets.*
 
 ---
 
@@ -96,7 +97,8 @@ Kafka organizes data into **topics**, each split into **partitions** for paralle
 
 **Retention** keeps messages for a configured time or size regardless of whether they've been consumed — unlike a traditional queue, reading a message in Kafka doesn't delete it. **Compaction** is an alternative retention strategy that keeps only the latest message per key forever, useful for topics representing current state (e.g., "the latest profile per user ID") rather than a pure event history.
 
-> 📊 **Diagram:** `kafka-architecture.drawio` — Shows brokers in a cluster, a topic split across multiple partitions distributed across those brokers, and two consumer groups independently reading the same topic at different offsets.
+![Kafka cluster architecture diagram](./diagrams/exports/kafka-architecture.png)
+*Brokers in a cluster, a topic split across multiple partitions distributed across those brokers, and two consumer groups independently reading the same topic at different offsets.*
 
 ---
 
