@@ -26,7 +26,8 @@ When a popular cache key expires, many concurrent requests can all miss simultan
 - **Probabilistic early expiration** — recompute slightly *before* actual expiry, with randomized timing per-request, so requests don't all expire in the same instant.
 - **Background refresh** — proactively refresh hot keys before they expire, so they (ideally) never actually miss under normal load.
 
-> 📊 **Diagram:** `cache-stampede-solution.drawio` — Shows N concurrent requests hitting an expired key; without mitigation, all N hit the database simultaneously; with mutex locking, only 1 hits the database while N-1 wait for its result.
+![Cache stampede mutex locking solution diagram](../01-concepts/diagrams/exports/cache-stampede-solution.png)
+*Without mitigation, N concurrent requests hitting an expired key all hit the database simultaneously; with mutex locking, only 1 request hits the database while the rest wait for its result.*
 
 ---
 

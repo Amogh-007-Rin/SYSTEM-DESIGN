@@ -17,6 +17,9 @@ Caching exists at every layer of a system, and a real architecture typically use
 - **Distributed cache** (Redis, Memcached) — a shared cache layer accessible by many application server instances.
 - **Database query cache** — some databases cache the result of recent queries internally.
 
+![Caching layers diagram](./diagrams/exports/cache-layers.png)
+*A single request flowing through every caching layer it could hit, in order: client cache → CDN → reverse proxy → application-level cache → distributed cache → database query cache → database.*
+
 ---
 
 ## Caching Patterns
@@ -27,6 +30,9 @@ Caching exists at every layer of a system, and a real architecture typically use
 | **Write-through** | Every write goes to the cache and the database together, synchronously | Cache is always consistent with the DB; write latency includes both writes |
 | **Write-behind (write-back)** | Write goes to the cache immediately; DB write happens asynchronously afterward | Lowest write latency; risk of data loss if the cache fails before the DB write completes |
 | **Read-through** | The cache itself (not the app) knows how to load from the DB on a miss | Simplifies application code; requires cache infrastructure that supports this (not all do natively) |
+
+![Cache patterns comparison diagram](./diagrams/exports/cache-patterns-comparison.png)
+*Four side-by-side panels (cache-aside, write-through, write-behind, read-through), each showing the app, cache, and database, with arrows numbered to show the order operations happen in under that pattern.*
 
 > 🎯 **Interview Tip:** Cache-aside is the default answer for most read-heavy systems in an interview — it's simple, and you explicitly control what gets cached. Reach for write-through only when you've stated *why* (e.g., "this data is read immediately after being written, so I want to guarantee the cache never serves a stale value right after a write").
 
@@ -42,6 +48,9 @@ A cache has finite size — something must be evicted to make room for new entri
 - **TTL-based** — entries expire after a fixed duration regardless of access. Often combined with another policy (e.g., LRU + a max TTL safety net).
 
 > ⚠️ **Warning:** LRU isn't free of pathological cases — a single sequential scan over a dataset larger than the cache will evict every genuinely "hot" entry to make room for items that will never be accessed again. This is a known weakness worth naming if asked to defend LRU.
+
+![LRU cache structure diagram](./diagrams/exports/lru-cache-structure.png)
+*A doubly-linked list of cache entries from most-recently-used to least-recently-used, with a hashmap pointing directly to each node for O(1) lookup.*
 
 ---
 
