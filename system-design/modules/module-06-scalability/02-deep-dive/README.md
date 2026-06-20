@@ -33,7 +33,8 @@ Manually adding/removing servers as load changes doesn't scale (pun intended) pa
 
 Kubernetes' HPA is the most common concrete implementation of reactive auto-scaling. It watches a metric (CPU by default; custom metrics like queue depth are also supported) against a **target value** you configure, and adjusts pod replica count to keep the observed metric near the target — e.g., "keep average CPU at 50%; if higher, add pods; if lower, remove pods" — within a configured min/max range.
 
-> 📊 **Diagram:** `auto-scaling-loop.drawio` — Shows the HPA control loop: metrics server reports current CPU/custom-metric utilization → HPA controller compares to target → HPA adjusts the Deployment's replica count → new pods register with the Service and begin receiving traffic from the load balancer, closing the loop.
+![HPA auto-scaling control loop diagram](../01-concepts/diagrams/exports/auto-scaling-loop.png)
+*The HPA control loop: metrics server reports current utilization → HPA controller compares to target → HPA adjusts the Deployment's replica count → new pods register with the Service and begin receiving traffic, closing the loop back to the metrics server.*
 
 > 🎯 **Interview Tip:** If asked how a system handles a traffic spike, naming auto-scaling alone is incomplete — mention the boot/warm-up lag, that scaling is reactive by default unless you've built predictive scaling, and that stateless services ([01-concepts](../01-concepts/README.md)) are what make adding/removing instances safe in the first place.
 

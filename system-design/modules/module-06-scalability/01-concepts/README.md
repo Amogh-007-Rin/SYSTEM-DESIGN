@@ -51,11 +51,14 @@ Real systems tend to evolve through a predictable sequence of stages, each one s
 5. **Database replication** — read replicas absorb read traffic so the primary database isn't doing all the work alone; this only helps once reads (not writes) are the bottleneck.
 6. **Sharding** — once a single database's *write* capacity or total dataset size is the limit, split the data across multiple database instances (shards), each owning a subset of the data.
 
-> 📊 **Diagram:** `scaling-journey.drawio` — Shows the six-stage evolution from a single server running app+DB together, through separated DB, caching, multiple app servers behind a load balancer, read replicas, and finally sharded databases, with the bottleneck that triggers each transition labeled on the arrow between stages.
+![The scaling journey diagram](./diagrams/exports/scaling-journey.png)
+*The six-stage evolution from a single server running app+DB together, through separated DB, caching, multiple app servers behind a load balancer, and read replicas, to sharded databases — with the bottleneck that triggers each transition labeled on the arrow between stages.*
 
-> 📊 **Diagram:** `vertical-vs-horizontal-scaling.drawio` — Side-by-side comparison: vertical scaling shown as one box growing larger over time with a visible ceiling; horizontal scaling shown as identical boxes being added side by side behind a load balancer, with no ceiling drawn.
+![Vertical vs. horizontal scaling diagram](./diagrams/exports/vertical-vs-horizontal-scaling.png)
+*Side-by-side comparison: vertical scaling as one server being repeatedly upgraded until it hits a ceiling, versus horizontal scaling as identical servers added side by side behind a load balancer with no ceiling.*
 
-> 📊 **Diagram:** `stateless-scaling.drawio` — A load balancer routing requests to N identical stateless app server instances, each reading/writing shared state to a common database and cache layer rather than holding any of it locally, illustrating why any instance can serve any request.
+![Stateless scaling diagram](./diagrams/exports/stateless-scaling.png)
+*A load balancer routing requests to N identical stateless app server instances, each reading/writing shared state to a common database and cache layer rather than holding any of it locally — illustrating why any instance can serve any request.*
 
 Each stage is a real trade-off, not a strict improvement — caching adds invalidation complexity; replicas add replication lag; sharding makes cross-shard queries hard. Skipping straight to sharding for a system with 200 users is over-engineering; staying single-server past the point your database is visibly the bottleneck is under-engineering. The skill is recognizing *which* stage you're actually in.
 
