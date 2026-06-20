@@ -72,7 +72,8 @@ Once you know *who* someone is, you need a model for deciding *what they can do*
 
 > 💡 **Note:** These aren't mutually exclusive in real systems. A common pattern is RBAC for coarse-grained access ("is this user an admin at all?") combined with an ABAC-style ownership check for fine-grained resource access ("...and is this specifically *their* resource?"). [`01-concepts/examples/rbac-engine.ts`](./examples/rbac-engine.ts) implements a working RBAC permission-check engine and shows exactly where that ownership check would be layered on top.
 
-> 📊 **Diagram:** `defense-in-depth.drawio` — Shows concentric security layers around an application (network firewall → load balancer/WAF → authentication → authorization → input validation → encrypted data store), illustrating that a request must pass every layer, and compromising one layer alone doesn't compromise the system.
+![Defense in depth layers diagram](./diagrams/exports/defense-in-depth.png)
+*Security layers a request must pass through in sequence — network firewall → load balancer/WAF → authentication → authorization → input validation → encrypted data store — illustrating that compromising one layer alone doesn't compromise the system.*
 
 ---
 

@@ -48,7 +48,8 @@ The old security model drew a hard perimeter — a firewall, a VPN — and trust
 
 **mTLS (mutual TLS)** is the core mechanism making zero trust practical between services: in ordinary TLS, only the server presents a certificate (the client verifies the server, but the server takes the client's word for who it is). In **mutual** TLS, both sides present and verify certificates — the server confirms the client is a specific known service, not just *some* TLS-speaking caller. In microservices, this is usually transparent via a **service mesh** (Istio, Linkerd) sidecar, so individual services don't implement certificate handling themselves — the mesh issues, rotates, and verifies short-lived certificates for every service identity automatically.
 
-> 📊 **Diagram:** `zero-trust-architecture.drawio` — Shows two internal services communicating via mTLS sidecar proxies inside a service mesh, each presenting and verifying a short-lived certificate, contrasted with a legacy perimeter model where internal traffic between the same two services is unauthenticated by default.
+![Zero trust vs. legacy perimeter architecture diagram](../01-concepts/diagrams/exports/zero-trust-architecture.png)
+*Two internal services communicating via mTLS sidecar proxies inside a service mesh, each presenting and verifying a short-lived certificate, contrasted with a legacy perimeter model where internal traffic is unauthenticated by default.*
 
 > 💡 **Note:** Zero trust doesn't mean "no network security" — it means the network boundary is no longer the *only* security boundary, or even the primary one. You still have firewalls and VPCs; you just stop trusting them as sufficient on their own.
 
@@ -71,7 +72,8 @@ Module 03 covers OAuth 2.0's flows at the API design level; here's what running 
 
 > 🎯 **Interview Tip:** PKCE is now recommended for *all* OAuth public clients, not just mobile — if asked to design "Sign in with Google" for a single-page app, mentioning PKCE by name (and that it replaced the older implicit flow, which exposed tokens directly in the URL fragment) is a strong signal.
 
-> 📊 **Diagram:** `oauth-pkce-flow.drawio` — Shows the full Authorization Code + PKCE sequence: client generates `code_verifier`/`code_challenge`, redirects to the authorization server with the challenge, receives an authorization code, then exchanges the code plus the original verifier for an access and refresh token.
+![OAuth 2.0 PKCE flow diagram](../01-concepts/diagrams/exports/oauth-pkce-flow.png)
+*The full Authorization Code + PKCE sequence: the client generates a `code_verifier`/`code_challenge` pair, redirects with the challenge, receives an authorization code, then exchanges the code plus the original verifier for an access and refresh token.*
 
 ---
 
