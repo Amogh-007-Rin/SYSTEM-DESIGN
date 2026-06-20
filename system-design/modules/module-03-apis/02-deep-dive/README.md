@@ -30,6 +30,9 @@ An API gateway is the single entry point in front of a set of backend services, 
 
 This is covered architecturally in [Module 11 — Microservices](../../module-11-microservices/01-concepts/README.md); here, the focus is what the gateway does to the API contract itself — it's often the layer that actually enforces your versioning and rate-limiting policy, not the backend services.
 
+![API gateway architecture diagram](../01-concepts/diagrams/exports/api-gateway-architecture.png)
+*A client request entering a single API gateway, which performs auth/rate-limiting/routing, then fans out to several backend microservices, each unaware of the gateway's cross-cutting concerns.*
+
 ---
 
 ## Rate Limiting Algorithms
@@ -43,6 +46,9 @@ This is covered architecturally in [Module 11 — Microservices](../../module-11
 
 > ⚠️ **Warning:** Fixed-window rate limiting has a well-known edge case: a client can send the full limit in the last second of one window and the full limit again in the first second of the next, getting 2x the intended rate in a 2-second span. If this matters for your system, use sliding window or token bucket instead.
 
+![Token bucket rate limiter diagram](../01-concepts/diagrams/exports/token-bucket-rate-limiter.png)
+*A bucket filling with tokens at a fixed rate up to a capacity line; a request with an available token is allowed, while a request against an empty bucket is rejected until the next refill tick.*
+
 ---
 
 ## Authentication and Authorization at the API Layer
@@ -52,6 +58,9 @@ This is covered architecturally in [Module 11 — Microservices](../../module-11
 - **JWT (JSON Web Tokens)** — a signed (and optionally encrypted) token format often used to carry OAuth access tokens or session claims; the signature lets a server verify the token wasn't tampered with *without a database lookup*, at the cost of being hard to revoke before expiry (since validity is normally checked offline from the signature alone).
 
 > 💡 **Note:** "JWT" and "OAuth" solve different problems and are often confused. OAuth is about *delegated authorization* (a flow). JWT is just a *token format* — you could use OAuth with opaque tokens instead of JWTs, and you could use JWTs without any OAuth flow at all (e.g., your own simple login system).
+
+![OAuth 2.0 authorization code flow diagram](../01-concepts/diagrams/exports/oauth-flow.png)
+*OAuth 2.0 authorization code flow sequence: user approves access at the authorization server, the client receives a redirect with a code, and exchanges that code (plus its secret) for an access token directly with the authorization server.*
 
 ---
 

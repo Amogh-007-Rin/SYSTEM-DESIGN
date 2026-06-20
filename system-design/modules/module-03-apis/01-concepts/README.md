@@ -86,6 +86,9 @@ gRPC uses **Protocol Buffers** (a compact binary serialization format) over HTTP
 | Human-debuggable | Yes (`curl`, browser) | Yes (GraphiQL/Playground) | No (needs tooling) |
 | Streaming | Limited (SSE/WebSocket bolted on) | Subscriptions | Native, bidirectional |
 
+![REST vs. GraphQL vs. gRPC comparison diagram](./diagrams/exports/rest-vs-graphql-vs-grpc.png)
+*Three side-by-side panels: REST showing multiple fixed endpoints returning fixed shapes, GraphQL showing one endpoint with a client-specified query resolving to an exact shape, and gRPC showing a binary payload over HTTP/2.*
+
 > 🎯 **Interview Tip:** Don't present this as "gRPC is just better/faster." The right answer names the *audience*: "if this API has external third-party consumers, REST's debuggability and ubiquitous tooling usually wins even though gRPC is faster — the audience matters more than raw performance here."
 
 ---
