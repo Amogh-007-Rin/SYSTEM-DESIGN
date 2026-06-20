@@ -16,7 +16,8 @@
 
 **Vector clocks** fix that blind spot by giving every node its own slot *and* tracking what it knows about every other node's counter — e.g., `[2, 0, 1]` for a 3-node system. Rules: increment your own slot on a local event; attach the full vector on send; on receive, take the element-wise max, then increment your own slot. Comparing two vectors reveals the true relationship: one dominates the other (happened-before/after), they're equal, or neither dominates (**concurrent** — a genuine conflict). This is how Riak and the original Dynamo detect write conflicts needing application-level resolution. Implemented in [`examples/vector-clocks.ts`](./examples/vector-clocks.ts).
 
-> 📊 **Diagram:** `vector-clocks.drawio` — Shows 3 replicas (A, B, C) making writes and exchanging vectors, contrasting a clean causal chain (A→B→C) against two concurrent writes at A and B whose vectors neither dominates, flagged as a conflict.
+![Vector clocks: causality vs. concurrency diagram](../01-concepts/diagrams/exports/vector-clocks.png)
+*Replicas A, B, and C making writes and exchanging vectors: a clean causal chain (A→B→C) contrasted against two concurrent writes at A and B whose vectors neither dominates, flagged as a conflict.*
 
 > 🎯 **Interview Tip:** If asked how to detect conflicting writes in a leaderless system, name vector clocks specifically and explain the dominance comparison — not just "we use vector clocks" as a buzzword.
 
@@ -34,7 +35,8 @@ A **gossip protocol** spreads information the way a rumor spreads through a soci
 
 **Anti-entropy** is the complementary background process: rather than waiting for active propagation, it periodically compares replicas directly (often via Merkle trees, to cheaply find *which* ranges differ without comparing every key) and repairs divergence found. Gossip pushes new information outward; anti-entropy periodically checks that everyone already agrees and fixes it if not.
 
-> 📊 **Diagram:** `gossip-protocol.drawio` — Shows a value originating at one node propagating across an 8-node cluster over 3 rounds, roughly doubling reach each round, illustrating logarithmic convergence.
+![Gossip protocol propagation diagram](../01-concepts/diagrams/exports/gossip-protocol.png)
+*A value originating at one node propagating across an 8-node cluster, roughly doubling reach each round — illustrating logarithmic convergence.*
 
 ---
 
@@ -48,7 +50,8 @@ With `N` replicas, a client doesn't need all `N` to acknowledge a write or confi
 
 Quorums guarantee overlap, not recency by themselves — you still need version metadata (vector clocks/timestamps) on each value to know which overlapping version is newest.
 
-> 📊 **Diagram:** `quorum-reads-writes.drawio` — Shows N=3 replicas, a write acknowledged by W=2, and a read from R=2, with a highlighted replica common to both sets, illustrating why R+W>N guarantees overlap.
+![Quorum reads and writes diagram](../01-concepts/diagrams/exports/quorum-reads-writes.png)
+*N=3 replicas, a write acknowledged by W=2, and a read from R=2, with a highlighted replica common to both sets — illustrating why R+W>N guarantees overlap.*
 
 > 🎯 **Interview Tip:** Be ready to compute a quorum scenario on the spot ("N=5, minimum W and R to tolerate 2 failures on each side") — interviewers use this to confirm you understand the inequality, not just recite it.
 

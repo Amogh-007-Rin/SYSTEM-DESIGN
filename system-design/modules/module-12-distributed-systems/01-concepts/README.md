@@ -69,7 +69,8 @@ A **network partition** ("split brain") occurs when the network splits the clust
 
 Partitions matter because they force an explicit choice that the CAP theorem makes famous (full treatment in [Module 13](../../module-13-consistency-consensus/)): during a partition, do you keep accepting writes on both sides (risking inconsistent data once they reconnect) or refuse writes on the minority side (sacrificing availability to preserve consistency)? There's no version of "just don't have this problem" — partitions are a physical-network reality, not a design oversight.
 
-> 📊 **Diagram:** `distributed-system-failures.drawio` — Shows a 3-node cluster experiencing a network partition that splits it into {A, B} and {C}, contrasted side-by-side with a clean crash failure of node C, illustrating why the two situations look identical from A and B's perspective but require different system responses.
+![Network partition vs. clean crash diagram](./diagrams/exports/distributed-system-failures.png)
+*A 3-node cluster experiencing a network partition that splits it into {A, B} and {C}, contrasted side-by-side with a clean crash failure of node C — illustrating why the two situations look identical from A and B's perspective but require different system responses.*
 
 ---
 
@@ -100,7 +101,8 @@ Any node can accept a write directly from a client, which then propagates the wr
 
 > 🎯 **Interview Tip:** When asked to pick a replication strategy, the right answer is rarely "leaderless is most resilient so always use it" — it's naming the actual trade-off. Single-leader is the right default for most systems needing strong consistency with acceptable write throughput; multi-leader fits multi-region write-heavy systems that can tolerate occasional conflict resolution; leaderless fits systems prioritizing availability above all else (Dynamo's original use case: the shopping cart must always accept a write, even mid-partition).
 
-> 📊 **Diagram:** `replication-topologies.drawio` — Shows three side-by-side topologies: single-leader (one leader, arrows fanning out to followers), multi-leader (two leaders in different regions, bidirectional arrows between them, each fanning out locally), and leaderless (a ring of equal nodes, client writing directly to multiple nodes at once).
+![Replication topologies diagram](./diagrams/exports/replication-topologies.png)
+*Three side-by-side topologies: single-leader (one leader, arrows fanning out to followers), multi-leader (two leaders in different regions, syncing with each other while each fans out locally), and leaderless (a client writing directly to multiple equal nodes).*
 
 ---
 
