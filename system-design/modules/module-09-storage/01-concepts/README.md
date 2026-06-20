@@ -44,7 +44,8 @@ Object storage systems like S3 expose a deceptively simple API — `PUT`, `GET`,
 
 "Blob storage" is largely a synonym for object storage (the term Azure prefers), and the two are almost always paired with a CDN in production: the object store is the durable origin holding every image/video ever uploaded, while a CDN caches the popular subset at edge locations close to users so that most reads never reach the origin at all. This separation is deliberate — object storage is optimized for durability and infinite scale, not for serving millions of reads/second with sub-10ms latency to users worldwide; a CDN is optimized for exactly that. (Full treatment of CDN edge caching, cache invalidation at the edge, and origin shielding is in [Module 10](../../module-10-cdn/).)
 
-> 📊 **Diagram:** `block-vs-object-vs-file-storage.drawio` — Side-by-side comparison showing a database mounted on a block volume, a fleet of servers sharing files over NFS, and clients hitting an object store's flat key-namespace over HTTP, highlighting the differing access patterns.
+![Block vs. file vs. object storage comparison diagram](./diagrams/exports/block-vs-object-vs-file-storage.png)
+*Side-by-side comparison: a database mounted on a block volume, a fleet of servers sharing files over NFS, and clients hitting an object store's flat key-namespace over HTTP — highlighting the differing access patterns.*
 
 ---
 

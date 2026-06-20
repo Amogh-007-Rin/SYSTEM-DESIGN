@@ -16,7 +16,8 @@ A Log-Structured Merge tree is built from three cooperating pieces:
 
 **Reads** check the memtable first (newest data), then SSTables newest-to-oldest, stopping at the first match — which is why a read can be slower than a write here: an old, untouched key might require checking several SSTables. Real implementations (RocksDB, Cassandra) mitigate this with per-SSTable **Bloom filters** (cheaply skip SSTables that provably lack the key — the same structure covered in [Module 05's bloom filter exercise](../../module-05-caching/02-deep-dive/examples/bloom-filter.ts)) and **sparse indexes** that let a lookup jump close to the right offset instead of scanning the whole file.
 
-> 📊 **Diagram:** `lsm-tree-structure.drawio` — Shows writes flowing into the memtable, periodic flushes producing immutable SSTables on disk, a background compaction merging older SSTables, and a read path checking the memtable then SSTables newest-first.
+![LSM tree structure diagram](../01-concepts/diagrams/exports/lsm-tree-structure.png)
+*Writes flow into the memtable; periodic flushes produce immutable SSTables on disk; background compaction merges older SSTables; and the read path checks the memtable first, then SSTables newest-first.*
 
 > ⚠️ **Warning:** Compaction isn't free — it consumes disk I/O and CPU in the background, and a poorly-tuned compaction strategy under heavy write load can cause "write stalls" where writes briefly block because compaction can't keep up with the rate new SSTables are being created. This is a real operational failure mode in Cassandra and RocksDB deployments, not a theoretical concern.
 

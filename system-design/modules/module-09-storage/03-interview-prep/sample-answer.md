@@ -28,7 +28,8 @@ The photo's bytes live in object storage, keyed by a generated photo ID (e.g., `
 3. Once the upload completes, the client (or an event triggered by the storage system itself, e.g., S3 event notifications) notifies the application server, which writes the metadata row and kicks off asynchronous post-processing.
 4. **Asynchronous post-processing** (via a message queue, see [Module 08](../../module-08-message-queues/)) generates multiple resized variants (thumbnail, feed-size, full-size) and stores each as its own object — pre-generating these avoids resizing on every read.
 
-> 📊 **Diagram:** `s3-upload-flow.drawio` — Shows the client requesting a presigned URL from the application server, uploading photo bytes directly to object storage, an event notification firing back to the application server, and an asynchronous worker fanning out to generate resized variants.
+![S3-style photo upload flow diagram](../01-concepts/diagrams/exports/s3-upload-flow.png)
+*The client requests a presigned URL from the application server, uploads photo bytes directly to object storage, an event notification fires back to the application server, and an asynchronous worker generates resized variants.*
 
 > 🎯 **Interview Tip:** Mentioning presigned URLs for direct-to-storage upload is a strong signal — it shows you know application servers shouldn't be a bandwidth-bound proxy for large binary transfers when the storage system can accept the upload directly and securely.
 
