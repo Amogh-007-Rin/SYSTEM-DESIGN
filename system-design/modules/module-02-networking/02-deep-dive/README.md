@@ -37,7 +37,8 @@ These three are easy to conflate but answer different questions:
 
 Before any HTTP request can be sent, TCP needs a 3-way handshake (SYN → SYN-ACK → ACK), and HTTPS adds a TLS handshake on top of that. At a 50ms one-way latency, a fresh TCP+TLS connection can cost 150–300ms before a single byte of actual data moves — this is exactly why **connection reuse** matters so much at scale.
 
-> 📊 **Diagram:** `tcp-handshake.drawio` — A sequence diagram showing client and server exchanging SYN, SYN-ACK, and ACK, with a timeline showing the round trips consumed before data can flow.
+![TCP 3-way handshake sequence diagram](../01-concepts/diagrams/exports/tcp-handshake.png)
+*A sequence diagram showing client and server exchanging SYN, SYN-ACK, and ACK, with a timeline showing the round trips consumed before data can flow.*
 
 ## Keep-Alive and Connection Pooling
 

@@ -38,7 +38,8 @@ DNS is a distributed, hierarchical, heavily cached lookup system. Resolving `www
 5. It then asks `example.com`'s **authoritative server** ("what's the IP for `www`?").
 6. The answer is returned and cached at every layer for the duration of its **TTL** (time-to-live).
 
-> 📊 **Diagram:** `dns-resolution-flow.drawio` — End-to-end DNS resolution showing client → recursive resolver → root server → TLD server → authoritative server, with the final IP answer flowing back and being cached at each hop.
+![DNS resolution flow diagram](./diagrams/exports/dns-resolution-flow.png)
+*End-to-end DNS resolution showing client → recursive resolver → root server → TLD server → authoritative server. The final IP answer flows back and is cached at every hop for the duration of its TTL.*
 
 > 🎯 **Interview Tip:** TTL is a real design lever, not just a DNS implementation detail. A low TTL (e.g. 60s) lets you reroute traffic quickly during an incident or deploy, at the cost of more DNS query volume. A high TTL reduces query load but means a bad change propagates slowly to undo.
 
@@ -86,6 +87,9 @@ A WebSocket starts as a normal HTTP request that asks to be "upgraded," then bec
 | **Long polling** | Server holds the request open until there's something to return (or a timeout) | Lower latency than short polling, but ties up a server connection per waiting client |
 | **SSE** | Server keeps one HTTP connection open and streams events as plain text | Simple, one-directional (server → client only), works over plain HTTP |
 | **WebSockets** | Persistent, bidirectional connection | Most powerful and lowest latency, but requires connection-state management at scale (see Module 16) |
+
+![Polling vs. SSE vs. WebSockets comparison diagram](./diagrams/exports/polling-vs-websocket.png)
+*Four side-by-side panels comparing short polling, long polling, SSE, and WebSockets: request/response pairs for the polling techniques versus a single persistent, bidirectional connection for WebSockets.*
 
 ---
 

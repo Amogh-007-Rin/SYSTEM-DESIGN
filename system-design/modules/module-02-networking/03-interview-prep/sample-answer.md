@@ -20,7 +20,8 @@
 
 **Connections:** Use HTTP/2 (or HTTP/3 where client support allows) between clients and the edge, and persistent connection pools between application servers and databases, to avoid paying handshake costs repeatedly under load.
 
-> 📊 **Diagram:** `global-network-topology.drawio` — Three regional clusters (US, EU, APAC), each with application servers and a local read replica, a CDN layer in front of all three for static assets, and GeoDNS routing users to their nearest region.
+![Global network topology diagram](../01-concepts/diagrams/exports/global-network-topology.png)
+*Three regional clusters (US, EU, APAC), each with application servers and a local read replica, a CDN layer in front of all three for static assets, and GeoDNS routing users to their nearest region.*
 
 ## Trade-offs
 
