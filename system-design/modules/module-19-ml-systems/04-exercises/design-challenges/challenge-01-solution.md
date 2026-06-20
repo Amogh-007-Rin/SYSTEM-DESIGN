@@ -13,7 +13,8 @@ This decomposition is the single most important thing to state up front — it r
 
 A **two-tower model** fits this stage well: a user tower encodes a user's viewing history, recency, and context into an embedding; an item tower independently encodes each title's metadata and aggregate engagement signals into an embedding in the *same* vector space, trained so a user's embedding lands close to titles they engaged with. Because the towers are independent, **all title embeddings are precomputed offline** and indexed once (via an approximate nearest neighbor index — FAISS or HNSW, covered in the [deep dive](../../02-deep-dive/README.md)); at request time, only the user's embedding needs to be computed fresh, then searched against the precomputed index — turning an O(catalog size) problem into one embedding computation plus a sub-linear vector search. **Collaborative filtering** signals (titles co-watched by similar users) can be blended in as an additional candidate source alongside the two-tower output, giving multiple independent candidate pools that get merged before ranking.
 
-> 📊 **Diagram:** `recommendation-system-two-tower.drawio` — Shows the two-tower architecture: a user tower and an item tower as separate neural networks producing embeddings in the same vector space, item embeddings precomputed and indexed offline, and a single user embedding at request time queried against that index via approximate nearest neighbor search.
+![Two-tower recommendation architecture diagram](../../01-concepts/diagrams/exports/recommendation-system-two-tower.png)
+*A user tower and an item tower as separate neural networks producing embeddings in the same vector space, with item embeddings precomputed/indexed offline and a single user embedding queried against that index at request time.*
 
 ## Ranking
 

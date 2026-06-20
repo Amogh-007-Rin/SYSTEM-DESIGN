@@ -21,7 +21,8 @@ Fraud features split cleanly into two latency categories:
 
 > ⚠️ **Warning:** The single highest-leverage thing to say explicitly here is that the 30-day aggregate feature **must be computed by the exact same logic during training (offline, batch) and serving (online, precomputed into the low-latency store)** — this is training-serving skew, and for a fraud model specifically, a skewed feature is dangerous in a very concrete way: it can mean the model was trained believing "high transaction velocity" means one thing, while production silently computes a different number for the same conceptual feature, directly degrading fraud catch rate with no error thrown anywhere.
 
-> 📊 **Diagram:** `feature-store-architecture.drawio` — Shows a single shared feature transformation definition feeding two materialized stores (an offline store backed by a data warehouse for training, and an online key-value store for real-time inference), with both training and serving reading the same logical feature — directly applicable to this fraud system's velocity/aggregate features.
+![Feature store architecture diagram](../01-concepts/diagrams/exports/feature-store-architecture.png)
+*A single shared feature transformation definition feeding two materialized stores, with both training and serving reading the same logical feature — directly applicable to this fraud system's velocity/aggregate features.*
 
 ## Model Architecture
 

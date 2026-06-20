@@ -17,7 +17,8 @@ Documents are split into chunks of roughly 200–500 tokens, with a modest overl
 
 A dedicated embedding model (much smaller and cheaper than the generation LLM) runs once per chunk at ingestion time, producing a dense vector stored alongside the chunk's text and source-document metadata (document ID, version, last-updated timestamp) in the vector database. When a source document is updated, the ingestion pipeline **re-chunks and re-embeds only that document**, then deletes its old chunk vectors and inserts the new ones (using the document ID as the deletion key) — versioning by document ID rather than trying to diff and patch individual chunks keeps the update path simple and correct. When a document is deleted, its chunks are deleted from the vector database in the same pass, preventing stale content from ever being retrievable.
 
-> 📊 **Diagram:** `rag-system-architecture.drawio` — Shows the two distinct pipelines in RAG: an offline ingestion pipeline (documents → chunking → embedding model → vector database) and an online query pipeline (user question → embedding → vector database top-k retrieval → prompt assembly → LLM generation → answer).
+![RAG system architecture diagram](../../01-concepts/diagrams/exports/rag-system-architecture.png)
+*The two distinct pipelines in RAG: an offline ingestion pipeline (documents → chunking → embedding model → vector database) and an online query pipeline (question → embedding → top-k retrieval → prompt assembly → LLM generation).*
 
 ## Vector Database Choice
 

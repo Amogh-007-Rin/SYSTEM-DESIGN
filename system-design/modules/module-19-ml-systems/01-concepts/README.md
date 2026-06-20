@@ -40,7 +40,8 @@ Every production ML system, regardless of domain, moves data through the same si
 
 **6. Monitoring** — Once live, the model's input distributions and prediction quality are continuously tracked, because — as established above — an ML system can degrade with zero code changes, purely because the world the model was trained on has shifted. (Full mechanics in the [deep dive](../02-deep-dive/README.md).)
 
-> 📊 **Diagram:** `ml-lifecycle.drawio` — Shows the six-stage ML lifecycle as a loop (not a line): data collection → feature engineering → training → evaluation → deployment → monitoring, with an arrow from monitoring back to data collection, illustrating that production monitoring signals (e.g., "this feature's distribution shifted") feed directly back into retraining.
+![ML lifecycle loop diagram](./diagrams/exports/ml-lifecycle.png)
+*The six-stage ML lifecycle as a loop, not a line: data collection → feature engineering → training → evaluation → deployment → monitoring, with monitoring signals feeding directly back into data collection for retraining.*
 
 > ⚠️ **Warning:** Treating this as a one-way pipeline instead of a loop is a common design mistake. The most important arrow in the diagram is the one from monitoring back to data collection/retraining — without it, you've built a system that degrades and never recovers, only ever alerts a human to intervene manually.
 
@@ -64,7 +65,8 @@ A feature store fixes this by giving both environments a **single, shared featur
 
 The critical guarantee a feature store provides is that the *transformation logic* — the code that turns raw events into the feature value — is defined **once** and run by both paths (or, in the most rigorous designs, the online store is populated by streaming the same transformation that backs the offline store, rather than reimplementing it). This is the single biggest lever for preventing training-serving skew; a worked illustration of what happens when that guarantee is violated is in [`examples/feature-store-skew.ts`](./examples/feature-store-skew.ts).
 
-> 📊 **Diagram:** `feature-store-architecture.drawio` — Shows a single shared feature transformation definition feeding two materialized stores (an offline store backed by a data warehouse for training, and an online key-value store for real-time inference), with both training and serving reading the same logical feature.
+![Feature store architecture diagram](./diagrams/exports/feature-store-architecture.png)
+*A single shared feature transformation definition feeding two materialized stores — an offline store for training, and an online key-value store for real-time inference — with both paths reading the same logical feature.*
 
 > 🎯 **Interview Tip:** If asked "why do you need both an online and offline feature store — isn't that redundant?", the precise answer is: they're not storing different data conceptually, they're storing the *same* feature definitions materialized for two incompatible access patterns (batch-and-slow vs. point-and-fast). The redundancy is deliberate and is what prevents training-serving skew, not what causes it — the skew risk comes from *not* sharing the feature definition, not from having two stores.
 
