@@ -19,7 +19,8 @@ From weakest (most available, least coordination) to strongest (least available,
 | **Linearizability** | Every operation appears to happen instantaneously at some single point in time, consistent with real-world wall-clock order, for *all* clients | Requires coordination (often consensus) on every operation; the strongest single-object guarantee |
 | **Strict serializability** | Linearizability extended to *multi-object transactions* — the combined effect of all transactions is equivalent to some serial (one-at-a-time) order, consistent with real time | The strongest practical guarantee; what systems like Spanner and CockroachDB advertise |
 
-> 📊 **Diagram:** `consistency-models-spectrum.drawio` — A horizontal spectrum bar from "eventual" to "strict serializability," with each model's guarantee annotated above and its coordination cost annotated below, showing the trend of increasing cost matching increasing guarantee strength.
+![Consistency models spectrum diagram](../01-concepts/diagrams/exports/consistency-models-spectrum.png)
+*A spectrum from "eventual" to "strict serializability," with coordination cost increasing alongside guarantee strength at every step.*
 
 > 💡 **Note:** This spectrum is not just academic trivia — it's the precise vocabulary for what a database's consistency *setting* actually buys you. "Strong consistency" in a vendor's marketing copy could mean linearizability or could mean something weaker; knowing the spectrum lets you ask "which one, precisely?"
 
@@ -56,7 +57,8 @@ A CRDT is a data structure whose merge operation is mathematically guaranteed to
 
 **Use cases:** distributed counters (like counts, view counts) that must accept writes from many regions without a coordination round trip; collaborative text editing (the algorithms behind tools like Figma's multiplayer editing and some implementations of Google Docs-style concurrent editing build on CRDT-like structures to merge concurrent character insertions/deletions deterministically); shopping cart line items represented as an OR-Set so concurrent adds from two devices both survive the merge.
 
-> 📊 **Diagram:** `crdt-counter.drawio` — Shows two G-Counter replicas (node-A: 3, node-B: 2) each incrementing independently, then merging via per-node max, converging to the same total (5) on both sides regardless of merge order.
+![G-Counter CRDT merge diagram](../01-concepts/diagrams/exports/crdt-counter.png)
+*Two G-Counter replicas (node-A: 3, node-B: 2) each incrementing independently, then merging via per-node max to converge on the same total (5) regardless of merge order.*
 
 ---
 
@@ -87,13 +89,15 @@ Every node is in one of three states: **follower**, **candidate**, or **leader**
 
 The **randomized timeout** is the crucial detail: it makes it statistically unlikely that two followers time out simultaneously and split the vote, while still guaranteeing *some* node will eventually time out first and win cleanly if no leader currently exists. Built hands-on (election only, no log replication) in [Coding Challenge 02](../04-exercises/coding-challenges/challenge-02/).
 
-> 📊 **Diagram:** `raft-leader-election.drawio` — Shows a 5-node cluster: one follower's election timeout fires first, it becomes a candidate, sends RequestVote to the other 4, receives 3 votes (a majority of 5), and transitions to leader while the others remain followers.
+![Raft leader election diagram](../01-concepts/diagrams/exports/raft-leader-election.png)
+*A 5-node cluster: one follower's election timeout fires first, it becomes a candidate, sends RequestVote to the other 4, and receives 3 votes — a majority of 5 — transitioning to leader.*
 
 ### Log Replication
 
 Once a leader is elected, all client writes go through it. The leader appends each write to its local log as an uncommitted entry, then replicates that entry to followers via `AppendEntries` RPCs. Once a **majority** of nodes (leader included) have stored the entry, the leader considers it **committed**, applies it to its own state machine, and informs followers on the next heartbeat that they can apply it too. This majority-acknowledgment requirement is exactly the same quorum trick from Paxos — it's what guarantees a committed entry survives even if the leader crashes immediately afterward, because a majority (which always overlaps with any future election-winning majority) already has it durably stored.
 
-> 📊 **Diagram:** `raft-log-replication.drawio` — Shows a leader appending entry #7 to its log, sending AppendEntries to 4 followers, receiving acknowledgment from 2 of them (giving 3/5 total — a majority), then marking entry #7 committed and applying it to the state machine.
+![Raft log replication diagram](../01-concepts/diagrams/exports/raft-log-replication.png)
+*A leader appending entry #7 to its log, sending AppendEntries to 4 followers, and receiving acknowledgment from 2 of them — 3/5 total, a majority — before marking entry #7 committed and applying it to the state machine.*
 
 ### Safety Guarantees
 

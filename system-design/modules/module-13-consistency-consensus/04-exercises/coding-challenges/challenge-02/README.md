@@ -6,7 +6,8 @@ Implement a simplified Raft leader election in TypeScript — **no log replicati
 
 This is the same mechanism described in [`02-deep-dive/README.md`](../../../02-deep-dive/README.md#leader-election), now made concrete: you'll implement the timeout, the candidacy, the vote-granting rule, and the majority check yourself.
 
-> 📊 **Diagram:** `raft-leader-election.drawio` — Shows a 5-node cluster: one follower's election timeout fires first, it becomes a candidate, sends RequestVote to the other 4, receives 3 votes (a majority of 5), and transitions to leader while the others remain followers.
+![Raft leader election diagram](../../../01-concepts/diagrams/exports/raft-leader-election.png)
+*A 5-node cluster: one follower's election timeout fires first, it becomes a candidate, sends RequestVote to the other 4, and receives 3 votes — a majority of 5 — transitioning to leader.*
 
 ## Requirements
 

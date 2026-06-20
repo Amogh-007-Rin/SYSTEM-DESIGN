@@ -6,7 +6,8 @@ Implement a **G-Counter** (grow-only counter) — a CRDT that lets multiple inde
 
 This is the simplest possible CRDT and the one almost every CRDT explanation starts with, because it makes the "commutative, associative, idempotent" property concrete with the least amount of moving parts: each node owns one entry in a map, only ever increments its own entry, and merge is just a per-key `max`.
 
-> 📊 **Diagram:** `crdt-counter.drawio` — Shows two G-Counter replicas (node-A: 3, node-B: 2) each incrementing independently, then merging via per-node max, converging to the same total (5) on both sides regardless of merge order.
+![G-Counter CRDT merge diagram](../../../01-concepts/diagrams/exports/crdt-counter.png)
+*Two G-Counter replicas (node-A: 3, node-B: 2) each incrementing independently, then merging via per-node max to converge on the same total (5) regardless of merge order.*
 
 ## Requirements
 

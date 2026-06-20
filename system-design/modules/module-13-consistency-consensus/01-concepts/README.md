@@ -68,7 +68,8 @@ CAP only describes behavior **during a partition**. PACELC (Abadi, 2010) extends
 
 In normal operation (no partition), do you wait for all replicas to acknowledge a write before confirming it (favoring consistency, at the cost of latency — every write waits for the slowest replica), or do you confirm immediately and replicate asynchronously (favoring latency, at the cost of letting a reader see stale data even with no partition in sight)? Cassandra is PA/EL — available during a partition, low-latency normally. A system using synchronous multi-region replication is typically PC/EC — consistent in both regimes, paying a latency tax for it constantly, not just during failures.
 
-> 📊 **Diagram:** `cap-theorem.drawio` — Shows the three CAP properties as a triangle with the "pick 2 of 3" framing crossed out, replaced by a partition-event timeline branching into the CP path (block/error) and AP path (serve possibly-stale data), with PACELC's added normal-operation latency/consistency fork shown alongside it.
+![CAP theorem decision diagram](./diagrams/exports/cap-theorem.png)
+*The "pick 2 of 3" framing replaced by what actually happens: a partition forces a choice between the CP path (block/error) and the AP path (serve possibly-stale data); PACELC's latency/consistency trade-off still applies even with no partition.*
 
 A worked TypeScript simulation of exactly this branch point — what a CP node does vs. what an AP node does when a partition is simulated — is in [`examples/cap-simulation.ts`](./examples/cap-simulation.ts).
 
