@@ -17,4 +17,5 @@ Building on the service decomposition from [Design Challenge 01](./challenge-01.
 
 A full worked solution, including a runnable TypeScript implementation, is in [`challenge-02-solution.md`](./challenge-02-solution.md) and [`../../02-deep-dive/examples/saga-pattern.ts`](../../02-deep-dive/examples/saga-pattern.ts).
 
-> 📊 **Diagram:** `saga-orchestration.drawio` — Shows a central Saga Orchestrator calling Order, Inventory, and Payment in sequence, with the compensating calls (release inventory, cancel order) fired in reverse order once Payment fails.
+![Saga orchestration diagram](../../01-concepts/diagrams/exports/saga-orchestration.png)
+*A central Saga Orchestrator calling Order, Inventory, and Payment in sequence, with the compensating calls fired in reverse order once Payment fails.*

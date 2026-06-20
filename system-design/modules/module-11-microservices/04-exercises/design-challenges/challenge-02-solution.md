@@ -4,7 +4,8 @@
 
 **Orchestration.** This saga only has three steps today, where choreography would still be viable — but I'd choose orchestration anyway because (a) checkout is the single highest-stakes flow in the whole system, where being able to look at one orchestrator's state machine and answer "why didn't this order ship?" without reconstructing a timeline across three services' logs is worth the extra coupling, and (b) this flow is very likely to grow more steps over time (fraud check, tax calculation, loyalty points) and orchestration scales better as steps are added — choreography's implicit, spread-out coordination logic gets harder to reason about with every new event subscriber, exactly as described in [02-deep-dive](../../02-deep-dive/README.md#choreography-vs-orchestration).
 
-> 📊 **Diagram:** `saga-orchestration.drawio` — Shows the Saga Orchestrator's sequential calls to Order, Inventory, and Payment, and the reverse-order compensating calls triggered when Payment fails.
+![Saga orchestration diagram](../../01-concepts/diagrams/exports/saga-orchestration.png)
+*The Saga Orchestrator's sequential calls to Order, Inventory, and Payment, and the reverse-order compensating calls triggered when Payment fails.*
 
 ## Happy Path
 

@@ -25,7 +25,8 @@ I'll use **business capability** as the primary lens, cross-checked against **DD
 
 > 💡 **Note:** "Product" is a DDD bounded-context example here in miniature — Catalog's notion of Product (description, images, marketing copy) and Inventory's notion of the same SKU (stock count, warehouse location) are different models serving different purposes. Keeping them as separate services, each with its own "Product"-shaped data, is correct; merging them into one shared Product entity is exactly the kind of accidental coupling DDD bounded contexts are meant to prevent.
 
-> 📊 **Diagram:** `monolith-vs-microservices.drawio` — Shows the single monolithic deployable (Catalog, Cart, Order, Payment, Inventory, Shipping all as modules sharing one database) on the left, and the same six capabilities as independently deployable services, each with its own database, communicating over the network with an API gateway in front, on the right.
+![Monolith vs. microservices diagram](../01-concepts/diagrams/exports/monolith-vs-microservices.png)
+*The single monolithic deployable on the left, and the same capabilities as independently deployable services, each with its own database, on the right.*
 
 ## APIs Between Services
 

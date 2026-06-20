@@ -19,7 +19,8 @@ Two distinct, independently sufficient justifications exist here, and a strong a
 
 Conway's Law cross-check: this maps cleanly onto "Browse/Search team" (Catalog), "Checkout team" (Cart, Order, Payment), and "Fulfillment team" (Inventory, Shipping) — three teams, three coherent groups of services, no team needs to touch another's service to ship most of their own roadmap.
 
-> 📊 **Diagram:** `monolith-vs-microservices.drawio` — Shows the single monolithic deployable (Catalog, Cart, Order, Payment, Inventory, Shipping as modules sharing one database) next to the same six capabilities as independently deployable services, each owning its own database, communicating through an API gateway.
+![Monolith vs. microservices diagram](../../01-concepts/diagrams/exports/monolith-vs-microservices.png)
+*The single monolithic deployable next to the same capabilities as independently deployable services, each owning its own database.*
 
 ## Data Ownership
 

@@ -32,7 +32,8 @@ Each service publishes events after completing its local transaction; other serv
 - Payment service consumes `InventoryReserved`, charges the customer, publishes `PaymentCompleted` (or `PaymentFailed`).
 - On `PaymentFailed`, Inventory consumes that event and runs its own compensating transaction (`ReleaseInventory`); Order consumes it too and marks the order `CANCELLED`.
 
-> 📊 **Diagram:** `saga-choreography.drawio` — Shows Order, Inventory, and Payment services connected only through a message broker, each publishing and subscribing to events with no central coordinator, including the compensating `ReleaseInventory` path triggered by `PaymentFailed`.
+![Saga choreography diagram](../01-concepts/diagrams/exports/saga-choreography.png)
+*Order, Inventory, and Payment services connected only through a message broker, each publishing and subscribing to events with no central coordinator — including the compensating `ReleaseInventory` path triggered by `PaymentFailed`.*
 
 ### Orchestration
 
@@ -42,7 +43,8 @@ A central **saga orchestrator** explicitly tells each service what to do next an
 - Orchestrator calls Inventory service: reserve stock.
 - Orchestrator calls Payment service: charge customer. On failure, orchestrator explicitly calls Inventory: release reservation, then Order: cancel order.
 
-> 📊 **Diagram:** `saga-orchestration.drawio` — Shows a central Saga Orchestrator making sequential calls to Order, Inventory, and Payment services and explicitly invoking compensating calls in reverse order when the Payment step fails.
+![Saga orchestration diagram](../01-concepts/diagrams/exports/saga-orchestration.png)
+*A central Saga Orchestrator making sequential calls to Order, Inventory, and Payment services, and explicitly invoking compensating calls in reverse order when the Payment step fails.*
 
 ### Choreography vs. Orchestration
 
@@ -69,7 +71,8 @@ Three states:
 - **Open** — once failures exceed a threshold, the breaker "trips": calls fail immediately (fast-fail) without even attempting the downstream call, for a configured `resetTimeoutMs`.
 - **Half-Open** — after the timeout, the breaker allows exactly one (or a small number of) trial call through. Success closes the breaker again; failure re-opens it.
 
-> 📊 **Diagram:** `circuit-breaker-states.drawio` — Shows the three-state cycle: Closed transitions to Open after the failure threshold is crossed, Open transitions to Half-Open after the reset timeout elapses, and Half-Open transitions back to Closed on a successful probe or back to Open on a failed one.
+![Circuit breaker state machine diagram](../01-concepts/diagrams/exports/circuit-breaker-states.png)
+*The three-state cycle: Closed transitions to Open after the failure threshold is crossed, Open transitions to Half-Open after the reset timeout elapses, and Half-Open transitions back to Closed on a successful probe or back to Open on a failed one.*
 
 This prevents **cascading failure**: without a breaker, every caller of a struggling service keeps sending requests, each one consuming a thread/connection while it waits to time out, until the *caller* also runs out of resources and becomes unhealthy too — the failure spreads upstream. Fast-failing while open means callers fail fast and stay healthy themselves, and stop adding load to a service that's already struggling to recover.
 

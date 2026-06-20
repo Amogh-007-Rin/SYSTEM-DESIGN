@@ -56,7 +56,8 @@ How do you actually draw the service boundaries?
 2. **By subdomain (Domain-Driven Design)** — identify **bounded contexts**: areas of the domain where a specific model and vocabulary apply consistently. "Product" means something subtly different to Catalog (description, images) than to Inventory (SKU, stock count) — DDD says these should likely be separate services, each with its own model of "Product," instead of one shared, increasingly bloated entity.
 3. **By team (Conway's Law)** — "organizations design systems that mirror their own communication structure." Two teams that must constantly coordinate to ship a change end up coupled along that same line regardless of the diagram, so deliberately aligning service boundaries with team boundaries (the "Inverse Conway Maneuver") makes the architecture match the organization on purpose instead of by accident.
 
-> 📊 **Diagram:** `monolith-vs-microservices.drawio` — Shows a single monolithic deployable containing Catalog, Orders, Payments, and Inventory modules sharing one database, next to the same four capabilities as independently deployable services each with its own database, communicating over the network.
+![Monolith vs. microservices diagram](./diagrams/exports/monolith-vs-microservices.png)
+*A single monolithic deployable containing Catalog, Orders, Payments, and Inventory modules sharing one database, next to the same four capabilities as independently deployable services each with its own database, communicating over the network.*
 
 ---
 
@@ -83,7 +84,8 @@ In a system with many service instances that scale up/down and get rescheduled (
 
 An **API gateway** is the single entry point external clients talk to, sitting in front of the whole constellation of internal services. It commonly handles: request routing to the correct backend service, authentication/authorization, rate limiting, response aggregation (combining calls to multiple services into one client-facing response), and protocol translation (e.g., external REST/JSON to internal gRPC). This matters specifically in microservices because without it, every client would need to know about, authenticate against, and call N internal services directly — the gateway hides that internal topology and lets it change without breaking clients.
 
-> 📊 **Diagram:** `microservices-with-api-gateway.drawio` — Shows external clients calling a single API gateway, which authenticates and routes requests to Order, Inventory, and Payment services, each with its own database, registered in a service discovery registry the gateway queries.
+![Microservices with an API gateway diagram](./diagrams/exports/microservices-with-api-gateway.png)
+*External clients calling a single API gateway, which authenticates and routes requests to Order, Inventory, and Payment services, each registered in a service discovery registry the gateway queries.*
 
 ---
 
