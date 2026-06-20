@@ -31,7 +31,8 @@ Nearly every system you'll design is some arrangement of a small set of building
 
 Later modules add more vocabulary to this list — caches, queues, load balancers, CDNs — but every one of them exists to solve a problem that arises from this base architecture: a server is too slow, a database can't take the write load, a client is too far from the data center. Learning system design is largely learning *why* each additional component earns its place in the architecture, and what it costs to add it.
 
-> 📊 **Diagram:** `client-server-architecture.drawio` — A basic client/server/database diagram showing a browser sending an HTTP request to an application server, which queries a database and returns a response, with arrows labeled for request and response direction.
+![Client-server architecture diagram](./diagrams/exports/client-server-architecture.png)
+*A basic client/server/database diagram showing a browser sending an HTTP request to an application server, which queries a database and returns a response, with arrows labeled for request and response direction.*
 
 ---
 
@@ -41,7 +42,8 @@ Later modules add more vocabulary to this list — caches, queues, load balancer
 - **Distributed** — functionality is split across multiple independently deployable services running on multiple machines. Enables independent scaling and team autonomy; introduces network calls, partial failure, and consistency challenges that don't exist in a monolith.
 - **Event-driven** — components communicate by producing and consuming events asynchronously, rather than by calling each other directly. Decouples producers from consumers in time; introduces eventual consistency and makes "what happened, and in what order" a harder question to answer.
 
-> 📊 **Diagram:** `monolith-vs-distributed.drawio` — Side-by-side comparison: a monolith as one large box containing UI/logic/data layers, versus a distributed system as several smaller boxes (services) connected by network calls, each with its own data store.
+![Monolith vs. distributed system comparison diagram](./diagrams/exports/monolith-vs-distributed.png)
+*Side-by-side comparison: a monolith as one large box containing UI/logic/data layers, versus a distributed system as several smaller boxes (services) connected by network calls, each with its own data store.*
 
 None of these is "the right one" in the abstract — they're trade-offs against team size, traffic, and how fast requirements are changing. A two-person startup that reaches for microservices on day one is usually solving a scaling problem it doesn't have yet, at the cost of a coordination problem it didn't need to take on.
 
@@ -86,7 +88,8 @@ Architecture diagrams are the primary communication tool of system design — in
 - **Color** typically encodes component *type* (see the [color convention in CONTRIBUTING.md](../../../CONTRIBUTING.md#color-convention) used throughout this repository: blue for clients, green for services, orange for databases, purple for caches, yellow for queues, teal for load balancers).
 - **Numbered steps** on arrows (1, 2, 3...) show the order of operations for a single request's journey through the system — this is the most common way to explain "walk me through what happens when a user posts a tweet."
 
-> 📊 **Diagram:** `anatomy-of-a-request.drawio` — A numbered, step-by-step flow of a single HTTP request: client → load balancer → application server → cache (miss) → database → cache (populate) → application server → client, with each arrow numbered in sequence.
+![Anatomy of a single HTTP request diagram](./diagrams/exports/anatomy-of-a-request.png)
+*A numbered, step-by-step flow of a single HTTP request: client → load balancer → application server → cache (miss) → database → cache (populate), with each arrow numbered in sequence.*
 
 ### Draw.io and Excalidraw
 

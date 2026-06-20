@@ -27,7 +27,8 @@
 
 ## 4. High-Level Architecture
 
-> 📊 **Diagram:** `note-app-architecture.drawio` — Shows a mobile/web client with a local embedded database (for offline support), connected over HTTPS to an application server, which persists to a single primary relational database with daily backups.
+![Note-taking app architecture diagram](../01-concepts/diagrams/exports/note-app-architecture.png)
+*Shows a mobile/web client with a local embedded database (for offline support), connected over HTTPS to an application server, which persists to a single primary relational database with daily backups.*
 
 **Components:**
 - **Client** — holds a local copy of notes in an embedded store (e.g., SQLite/IndexedDB) so reads/writes work offline instantly

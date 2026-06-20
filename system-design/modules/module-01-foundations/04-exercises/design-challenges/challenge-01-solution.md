@@ -25,7 +25,8 @@ This solution intentionally mirrors the fully worked example in [`03-interview-p
 
 ## Architecture
 
-> 📊 **Diagram:** `note-app-architecture.drawio` — Client with local embedded store ↔ HTTPS ↔ stateless application server ↔ single primary PostgreSQL database with backups.
+![Note-taking app architecture diagram](../../01-concepts/diagrams/exports/note-app-architecture.png)
+*Client with local embedded store ↔ HTTPS ↔ stateless application server ↔ single primary PostgreSQL database with backups.*
 
 **Components:**
 - **Client** — local embedded database (SQLite/IndexedDB) for instant offline reads/writes
