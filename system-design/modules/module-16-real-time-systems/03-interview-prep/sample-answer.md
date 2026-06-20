@@ -21,7 +21,8 @@ Since clients only need to *receive* (acknowledging or marking-as-read can go ov
 - **Sticky sessions** at the load balancer (consistent hashing on a connection/client identifier) ensure a client's reconnects land back on roughly the instance holding its prior state, and more importantly route *new* connections deterministically.
 - **A pub/sub backbone** (Redis Pub/Sub at this scale would likely need to be Redis Cluster, or a dedicated broker like Kafka/NATS, given the message volume) is the only way for the service that *decides* "user X should get notification Y" to actually reach whichever of the 200–500 instances happens to be holding user X's socket. Rather than broadcasting every notification to all 200–500 instances (wasteful at this scale — each instance would process every message regardless of relevance), I'd add a **connection registry**: a fast key-value lookup (`user:X -> instance:N`) updated on connect/disconnect, so the notification dispatch service can publish directly to the one channel/instance that actually holds that user's connection, rather than broadcasting to the full fleet.
 
-> 📊 **Diagram:** `notification-system.drawio` — Shows a notification dispatch service looking up a connection registry to find which of ~300 WebSocket instances holds a target user's socket, then delivering directly to that instance's dedicated channel rather than broadcasting to the full fleet.
+![Targeted notification delivery diagram](../01-concepts/diagrams/exports/notification-system.png)
+*A notification dispatch service looking up a connection registry to find which of ~300 WebSocket instances holds a target user's socket, then delivering directly to that instance's channel rather than broadcasting to the full fleet.*
 
 ## Handling Offline Recipients
 

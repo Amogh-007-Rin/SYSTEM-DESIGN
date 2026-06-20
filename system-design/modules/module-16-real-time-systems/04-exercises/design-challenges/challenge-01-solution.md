@@ -18,7 +18,8 @@ The sender's client distinguishes three delivery states (sent → delivered → 
 
 A group message is durably written once (to the conversation's message store, same as 1:1), then fanned out to every group member: for each member with an active connection, deliver live via the pub/sub backbone (per [Module 16's deep dive](../../02-deep-dive/README.md) fan-out pattern); for offline members, no live action is taken — same reasoning as 1:1, the durable write covers them.
 
-> 📊 **Diagram:** `chat-system-architecture.drawio` — Shows a group message's write path: one durable write to the conversation's message store, followed by parallel live-delivery attempts to each currently-connected group member via the pub/sub backbone, with offline members relying entirely on the durable write for eventual delivery on reconnect.
+![Chat system group message write path diagram](../../01-concepts/diagrams/exports/chat-system-architecture.png)
+*A group message's write path: one durable write to the conversation's message store, followed by parallel live-delivery attempts to each connected group member via the pub/sub backbone — offline members rely entirely on the durable write for eventual delivery on reconnect.*
 
 For large groups (hundreds of members), fan-out is the dominant cost — this is exactly the hierarchical fan-out pattern from the deep dive: the durable write triggers one publish to the backbone, which is fanned out by each subscribed server instance only to the (much smaller) subset of group members it personally holds connections for.
 

@@ -26,7 +26,8 @@ The standard solution: every WebSocket server instance also subscribes to a shar
 
 This converts "deliver to a specific socket somewhere in the fleet" into "broadcast to everyone, let the instance that owns the connection act on it" — at the cost of every server processing every message, even ones irrelevant to any connection it holds. That overhead is the trade-off accepted for not needing a separate discovery layer that tracks exactly which server holds which connection.
 
-> 📊 **Diagram:** `websocket-scaling-with-pubsub.drawio` — Shows 3 WebSocket server instances behind a load balancer with sticky sessions, all subscribed to a shared Redis Pub/Sub backbone; a message published by the instance holding Alice's connection fans out to all instances, and only the instance holding Bob's connection actually delivers it.
+![WebSocket scaling with a pub/sub backbone diagram](../01-concepts/diagrams/exports/websocket-scaling-with-pubsub.png)
+*Three WebSocket server instances behind a load balancer with sticky sessions, all subscribed to a shared Redis Pub/Sub backbone — a message published by the instance holding Alice's connection fans out to all instances, but only the instance holding Bob's connection actually delivers it.*
 
 > 💡 **Note:** At larger scale, some systems add a connection-registry layer (e.g., "user X's socket lives on server instance Y," stored in a fast key-value store) so a message can be routed directly to the one instance that needs it, instead of broadcasting to all instances unconditionally. This trades a small amount of registry-lookup latency and an extra moving part for a large reduction in wasted message processing — worth naming as a further-scaling refinement once the basic pub/sub backbone is established.
 
@@ -78,7 +79,8 @@ These three look different on the surface but share a structure: **one frequentl
 - **Live sports score / stock ticker**: a single authoritative value (score, price) updated frequently, broadcast via the fan-out mechanism above. Because viewers only care about the *current* value, not necessarily *every* intermediate value, these systems can safely coalesce updates under extreme load (if the price changed 10 times in 100ms, it's acceptable to broadcast only the latest value rather than all 10) — a relaxation that chat (where every individual message matters) cannot make.
 - **Collaborative editing** (e.g., Google Docs–style): the hardest of the three, because unlike a score or price, *every* individual edit matters and concurrent edits from different users must be merged into one consistent document rather than one simply overwriting another. This requires either **Operational Transformation (OT)** or **CRDTs (Conflict-free Replicated Data Types)** — both are algorithms for merging concurrent edits deterministically so every collaborator's view converges to the same final document regardless of the order updates were received in. Full coverage of CRDTs belongs to a distributed-systems-focused treatment; the system-design-relevant takeaway here is that collaborative editing is fundamentally a *conflict resolution* problem layered on top of the same WebSocket transport already covered in this module, not a transport problem itself.
 
-> 📊 **Diagram:** `chat-system-architecture.drawio` — Shows the full write path for a group chat message: client → WebSocket server → message store (durable write) and pub/sub backbone (live fan-out) in parallel, then delivery to online group members' sockets and a push notification to offline members.
+![Chat system group message write path diagram](../01-concepts/diagrams/exports/chat-system-architecture.png)
+*The full write path for a group chat message: client → WebSocket server → message store (durable write) and pub/sub backbone (live fan-out) in parallel, then delivery to online members' sockets and a push notification to offline members.*
 
 ---
 
