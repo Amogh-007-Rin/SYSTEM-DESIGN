@@ -16,7 +16,8 @@ An index is a separate data structure that lets the database find rows without s
 - **Covering indexes** — an index that includes all columns a query needs, letting the database answer entirely from the index without touching the underlying table at all.
 - **Partial indexes** — an index over only a subset of rows (`WHERE status = 'active'`), smaller and faster when most queries only care about that subset.
 
-> 📊 **Diagram:** `b-tree-index.drawio` — A balanced tree showing internal nodes with key ranges and leaf nodes pointing to actual row locations, illustrating why a lookup takes O(log n) comparisons instead of scanning every row.
+![B-tree index structure diagram](../01-concepts/diagrams/exports/b-tree-index.png)
+*A balanced tree showing a root node with key ranges, internal nodes, and leaf nodes pointing to actual row locations — illustrating why a lookup takes O(log n) comparisons instead of scanning every row.*
 
 > ⚠️ **Warning:** Indexes aren't free — every additional index slows down writes (each insert/update must also update every index on the table) and consumes storage. "Just add an index" is good advice for a slow read query; it's not a free action to take on every column reflexively.
 
@@ -47,7 +48,8 @@ Normalizing reduces redundancy and update anomalies; **denormalizing** (intentio
 - **Leaderless** — any node can accept a write, reconciled via quorum reads/writes (covered in [Module 12](../../module-12-distributed-systems/02-deep-dive/README.md)).
 - **Synchronous vs. asynchronous replication** — synchronous guarantees a replica is up to date before acknowledging the write (safer, slower); asynchronous acknowledges immediately and replicates in the background (faster, risks losing the most recent writes on a leader failure, and introduces **replication lag**).
 
-> 📊 **Diagram:** `database-replication-topologies.drawio` — Side-by-side: a single-leader topology (one primary, arrows fanning out to replicas) and a multi-leader topology (multiple primaries with bidirectional sync arrows between them).
+![Database replication topologies diagram](../01-concepts/diagrams/exports/database-replication-topologies.png)
+*Side-by-side: a single-leader topology (one primary, arrows fanning out to replicas) and a multi-leader topology (multiple primaries with bidirectional sync arrows between them).*
 
 ---
 
@@ -60,6 +62,9 @@ When a dataset outgrows a single node's capacity (storage or write throughput), 
 | **Range-based** | Shard by key ranges (`A-M` → shard 1, `N-Z` → shard 2) | Simple, supports efficient range queries; can create hot shards if data/traffic isn't evenly distributed across ranges |
 | **Hash-based** | Shard by `hash(key) % N` | Even distribution; loses the ability to do efficient range scans across shards |
 | **Directory-based** | A lookup service maps each key to its shard explicitly | Maximum flexibility (can rebalance individual keys); the directory itself becomes a critical, must-scale component |
+
+![Sharding strategies comparison diagram](../01-concepts/diagrams/exports/sharding-strategies.png)
+*Three side-by-side panels showing range-based (contiguous key blocks per shard), hash-based (scattered by hash%N), and directory-based (an explicit lookup table mapping each key to a shard) sharding strategies.*
 
 > ⚠️ **Warning:** The **resharding problem** — when you add or remove shards, naive `hash(key) % N` remaps almost every key to a new shard, requiring a massive data migration. [Consistent hashing](#) (implemented hands-on in this module's exercises) solves exactly this problem by minimizing how many keys move when the shard count changes.
 

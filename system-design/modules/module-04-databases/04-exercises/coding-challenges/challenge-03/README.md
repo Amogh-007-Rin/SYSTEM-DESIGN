@@ -4,6 +4,9 @@
 
 Implement a consistent hash ring with virtual nodes: each physical node is given many positions ("virtual nodes") on a hash ring, and a key maps to whichever ring position is nearest clockwise. This minimizes how many keys move when a node is added or removed — the core problem with naive `hash(key) % N` sharding (see [Module 04's deep dive](../../../02-deep-dive/README.md)).
 
+![Consistent hashing ring diagram](../../../01-concepts/diagrams/exports/consistent-hashing-ring.png)
+*A circular ring with 3 nodes (and their virtual node positions) placed clockwise, and a key's hash position mapping to the nearest node clockwise.*
+
 ## Requirements
 
 1. `addNode(nodeName)` — adds 150 virtual node positions for this node to the ring.

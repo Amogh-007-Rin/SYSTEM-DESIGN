@@ -58,7 +58,8 @@ The honest framing isn't "SQL doesn't scale" (it does, further than most people 
 
 Briefly: in a distributed database, during a network partition, you must choose between staying fully **consistent** (every read sees the latest write, but some nodes become unavailable) or staying fully **available** (every node responds, but some may return stale data). This is covered in full in [Module 13](../../module-13-consistency-consensus/) — for now, know that this is *why* different databases default to different consistency models, not an arbitrary vendor choice.
 
-> 📊 **Diagram:** `sql-vs-nosql-decision-tree.drawio` — A flowchart starting from "do you need ad-hoc queries / JOINs?" branching through schema flexibility, write throughput, and search needs down to a recommended database type.
+![SQL vs. NoSQL decision tree diagram](./diagrams/exports/sql-vs-nosql-decision-tree.png)
+*A flowchart starting from "do you need ad-hoc queries / JOINs?" branching through schema flexibility and write-throughput needs down to a recommended database type.*
 
 ---
 
