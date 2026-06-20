@@ -21,7 +21,8 @@ Clickstream events are high-volume (every page view, every click — easily tens
 
 Given the genuinely different latency requirements *and* the genuinely different correctness needs (the dashboard can tolerate slight undercounting; the historical funnel report cannot), this is a case where **Lambda's two explicit layers are the more honest design** rather than Kappa's single-stream simplification — the speed layer and batch layer are allowed to compute slightly different things (a live approximate count vs. an exact historical count), not just the same logic running on a delay.
 
-> 📊 **Diagram:** `lambda-architecture.drawio` — Shows clickstream events flowing into Kafka, then fanning out to both a Flink speed layer (feeding a live dashboard) and a Spark batch layer (feeding the historical warehouse), merged at a serving layer.
+![Lambda architecture diagram](../01-concepts/diagrams/exports/lambda-architecture.png)
+*Clickstream events flowing into Kafka, then fanning out to both a Flink speed layer (feeding a live dashboard) and a Spark batch layer (feeding the historical warehouse), merged at a serving layer.*
 
 ## Step 4 — Ingestion Path
 

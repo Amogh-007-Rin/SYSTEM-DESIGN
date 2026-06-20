@@ -14,7 +14,8 @@ These are different enough in *consequence of staleness* (surge pricing material
 
 Given that all three features ultimately need fresh, continuously-updated numbers (none of them has a "by tomorrow morning" batch-tolerant requirement), this is a strong fit for a **Kappa-style architecture**: one durable event log, one streaming processing layer, with different consumers/jobs reading the same stream for their own aggregation. There's no feature here that needs a separate, more-accurate-but-delayed batch recomputation the way the clickstream example's exact conversion funnel did — trip counts, surge ratios, and driver positions are all inherently "current state" problems, not "exact historical total" problems, so Lambda's second, slower-but-exact layer would add operational cost without a feature that actually needs it.
 
-> 📊 **Diagram:** `kappa-architecture.drawio` — Shows driver and rider app events landing in a single durable event log, with three independent stream processing jobs (trip counter, surge calculator, heatmap aggregator) each consuming the same log for their own purpose.
+![Kappa architecture diagram](../../01-concepts/diagrams/exports/kappa-architecture.png)
+*Driver and rider app events landing in a single durable event log, with three independent stream processing jobs (trip counter, surge calculator, heatmap aggregator) each consuming the same log for their own purpose.*
 
 ## Ingestion Path
 

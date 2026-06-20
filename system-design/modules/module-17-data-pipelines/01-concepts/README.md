@@ -38,7 +38,8 @@ The genius of MapReduce wasn't the map/reduce abstraction itself — it was that
 
 A concrete, runnable comparison of the same dataset processed both ways is in [`examples/batch-vs-stream.ts`](./examples/batch-vs-stream.ts).
 
-> 📊 **Diagram:** `batch-vs-stream-processing.drawio` — Side-by-side flow showing a batch job pulling a complete dataset from storage and emitting one final result, versus a stream job consuming an unbounded sequence of events one at a time and emitting incremental results as they arrive.
+![Batch vs. stream processing diagram](./diagrams/exports/batch-vs-stream-processing.png)
+*Side-by-side flow: a batch job pulling a complete dataset from storage and emitting one final result, versus a stream job consuming an unbounded sequence of events one at a time and emitting incremental results as they arrive.*
 
 ---
 
@@ -108,9 +109,11 @@ This works because durable, replayable log-based message systems like Kafka made
 
 > 💡 **Note:** Kappa isn't "Lambda done right" in every case — it's a simplification that fits when your transformation logic is genuinely the same for historical and live data. If batch and real-time genuinely need *different* logic (e.g., a nightly batch ML training job vs. a real-time feature lookup), Lambda's two explicit layers may still be the more honest design.
 
-> 📊 **Diagram:** `lambda-architecture.drawio` — Shows the same source data feeding both a batch layer (scheduled, accurate, delayed) and a speed layer (continuous, approximate, fast) into a merged serving layer.
+![Lambda architecture diagram](./diagrams/exports/lambda-architecture.png)
+*The same source data feeding both a batch layer (scheduled, accurate, delayed) and a speed layer (continuous, approximate, fast) into a merged serving layer.*
 
-> 📊 **Diagram:** `kappa-architecture.drawio` — Shows a single stream processing layer reading from a durable, replayable log, with historical reprocessing modeled as simply replaying the log from an earlier offset through the same job.
+![Kappa architecture diagram](./diagrams/exports/kappa-architecture.png)
+*A single stream processing layer reading from a durable, replayable log, with historical reprocessing modeled as simply replaying the log from an earlier offset through the same job.*
 
 ---
 

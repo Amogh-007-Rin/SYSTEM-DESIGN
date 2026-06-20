@@ -20,7 +20,8 @@ The naive alternative — having the application also publish an event to Kafka 
 
 A hands-on simulation of tailing a mock transaction log and converting entries into change events is in [`examples/cdc-simulator.ts`](./examples/cdc-simulator.ts).
 
-> 📊 **Diagram:** `cdc-pipeline.drawio` — Shows an application writing only to its own database, a Debezium connector tailing that database's transaction log, converting committed changes into events published to Kafka topics, and multiple independent downstream consumers reacting to those events.
+![CDC pipeline diagram](../01-concepts/diagrams/exports/cdc-pipeline.png)
+*An application writing only to its own database, a Debezium connector tailing that database's transaction log, converting committed changes into events published to Kafka topics, and multiple independent downstream consumers reacting to those events.*
 
 ---
 
@@ -74,7 +75,8 @@ Airflow DAGs are defined as Python code (not a drag-and-drop UI or static config
 
 A minimal DAG executor that runs tasks respecting dependency order, in the spirit of what Airflow's scheduler does, is in [`examples/dag-executor.ts`](./examples/dag-executor.ts).
 
-> 📊 **Diagram:** `lambda-architecture.drawio` *(shared with [01-concepts](../01-concepts/README.md))* — also useful here to visualize where an Airflow-orchestrated batch layer and an independently-running speed layer would sit relative to each other.
+![Lambda architecture diagram](../01-concepts/diagrams/exports/lambda-architecture.png)
+*Shared with [01-concepts](../01-concepts/README.md) — also useful here to visualize where an Airflow-orchestrated batch layer and an independently-running speed layer would sit relative to each other.*
 
 ---
 
