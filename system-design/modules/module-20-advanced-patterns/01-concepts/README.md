@@ -40,7 +40,8 @@ In active-active systems, the same record can be written in two regions before e
 - **CRDTs (Conflict-free Replicated Data Types)** — data structures (counters, sets, sequences) specifically designed so concurrent updates always merge deterministically without any conflict resolution step at all. Powerful, but only available for the specific data shapes that have a known CRDT design.
 - **Application-level merge** — push the conflict up to domain logic (e.g., merge two concurrently-edited shopping carts by union of items) when neither LWW nor a CRDT fits the semantics.
 
-> 📊 **Diagram:** `multi-region-active-active.drawio` — Shows two regions (US and EU) both accepting writes for the same logical record, async-replicating to each other, with a conflict-resolution step (LWW timestamp comparison) shown at the point where both regions' writes for the same key are reconciled.
+![Multi-region active-active replication diagram](./diagrams/exports/multi-region-active-active.png)
+*Two regions (US and EU) both accepting writes for the same logical record, async-replicating to each other, with a conflict-resolution step (LWW timestamp comparison) reconciling both regions' writes for the same key.*
 
 > ⚠️ **Warning:** "We'll just use last-write-wins" is a real answer, but say out loud what it costs: a legitimate update can be silently overwritten with no error, no merge, and no record that data was lost. That's an acceptable trade-off for a user's "last viewed" timestamp; it's not acceptable for an inventory count or a financial balance.
 
@@ -80,7 +81,8 @@ The fix is to move the bucket's state out of any individual node and into a **sh
 - **Why atomicity matters**: "check remaining tokens, then decrement" is two operations. If two requests from the same client hit two different application nodes at the same instant, both can read "1 token remaining" before either writes back the decrement — both get allowed, and the limit is silently violated by a classic race condition (the same class of bug covered generally in [Module 12 — Distributed Systems](../../module-12-distributed-systems/01-concepts/README.md)).
 - **Why Lua scripts**: Redis executes a Lua script as a single atomic operation — no other client's command can interleave with it. A token bucket's "compute elapsed time, refill, check, decrement, return result" logic, written as one Lua script and executed via `EVAL`, becomes a single atomic round trip instead of multiple round trips with a race condition window between them.
 
-> 📊 **Diagram:** `snowflake-id-generation.drawio` — Shows the 64-bit Snowflake layout (sign bit, 41-bit timestamp, 10-bit machine ID, 12-bit sequence) and three machines independently generating IDs in the same millisecond without collision.
+![Snowflake ID generation diagram](./diagrams/exports/snowflake-id-generation.png)
+*The 64-bit Snowflake layout (sign bit, 41-bit timestamp, 10-bit machine ID, 12-bit sequence) and three machines independently generating IDs in the same millisecond without collision.*
 
 > ⚠️ **Warning:** A naive "distributed" rate limiter built as `GET` (read counter) followed by a separate `SET` (write counter) from application code is not actually atomic — there's a window between the two Redis round trips where another node's request can interleave. This is a frequently-missed detail in interviews: stating "we'll use Redis" for distributed rate limiting is necessary but not sufficient; you need to say *how* you make the check-and-decrement atomic (a Lua script, or Redis's built-in `INCR`-based patterns for simpler counters). The full worked design, including the actual Lua script, is in [`03-interview-prep/sample-answer.md`](../03-interview-prep/sample-answer.md).
 

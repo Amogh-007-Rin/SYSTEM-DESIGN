@@ -15,7 +15,8 @@ The point is **blast radius containment**: if a bug, a bad deploy, a resource le
 - **Cell assignment** — customers/workspaces/accounts are assigned to a cell (often by a simple hash or an explicit mapping), and that assignment is mostly static — a customer doesn't bounce between cells request-to-request.
 - **Shuffle sharding** — a refinement where, instead of each cell having a fixed disjoint customer set, each *customer* is assigned to a unique combination of a small number of nodes drawn from a larger pool. The effect: even if some nodes are unhealthy, the probability that any two customers share the *exact same* set of unhealthy nodes is very low, so a node-level failure degrades a small, mostly-different slice of customers per failure rather than one fixed group repeatedly. AWS's Route 53 uses this technique and has written about it directly.
 
-> 📊 **Diagram:** `cell-based-architecture.drawio` — Shows 4 independent cells, each with its own application servers, cache, and database shard, behind a thin routing layer that maps customer ID to cell; one cell shown in a failed state with the other 3 unaffected.
+![Cell-based architecture diagram](../01-concepts/diagrams/exports/cell-based-architecture.png)
+*Four independent cells, each with its own application servers, cache, and database shard, behind a thin routing layer that maps customer ID to cell — one cell shown failed, with the other three unaffected.*
 
 > ⚠️ **Warning:** Cell-based architecture trades a meaningful amount of operational complexity and infrastructure cost (you're running N independent copies of your stack, not one shared pool with the efficiency that comes from pooling) for blast radius containment. It's the right trade for a system where "100% of customers affected" is categorically worse than "this same incident, but only 5% of customers affected" — which is most large multi-tenant systems, but it's a real cost worth naming, not a free upgrade.
 
@@ -62,7 +63,8 @@ A system is only as good as your ability to safely change it after it's already 
 - **Progressive delivery** is the general term covering canaries, feature flags, and blue-green together: the umbrella idea that rollout should be a gradual, observable, reversible process rather than a single all-at-once cutover with no checkpoint.
 - **Rollback strategy must be decided before deploying, not invented during an incident.** The cheapest rollback is "the previous version is still running and we just flip traffic back" (blue-green, or a canary that simply routes 0% to the new version); the most expensive is "redeploy the previous Git commit from scratch," which takes real time precisely when time matters most.
 
-> 📊 **Diagram:** `blue-green-deployment.drawio` — Shows two complete environments (blue = currently live v1, green = newly deployed v2) behind a router; an arrow shows traffic cutover from blue to green, and a dashed arrow shows the instant rollback path back to blue.
+![Blue-green deployment diagram](../01-concepts/diagrams/exports/blue-green-deployment.png)
+*Two complete environments (blue = currently live v1, green = newly deployed v2) behind a router: traffic cutover flows from blue to green, with a dashed instant-rollback path back to blue.*
 
 > ⚠️ **Warning:** Database schema changes are the hard part of "instant rollback" — if the new version writes data in a new schema shape and you roll back the application code, the old code now has to read data the new version already wrote. The standard mitigation is to make schema migrations **backward-compatible for at least one full deploy cycle** (additive changes only — add a new nullable column rather than renaming or dropping one — until every consumer of the old shape is gone), a discipline this is worth naming explicitly whenever rollback comes up.
 

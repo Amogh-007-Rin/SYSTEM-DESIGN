@@ -32,7 +32,8 @@ Finding "available drivers within ~2km of this rider" without scanning all 5M dr
 - A ride request's pickup location is converted to the same geohash precision, and the system queries that cell plus its immediate neighbors (to handle riders/drivers near a cell boundary) for available drivers.
 - **Alternative considered: quadtrees** — a tree structure that recursively subdivides space, denser where there are more points (more drivers). Quadtrees adapt better to wildly uneven driver density (dense in Manhattan, sparse in rural areas) than fixed-size geohash cells, at the cost of more complex tree-maintenance code as drivers move. Given the geographic skew already established in capacity estimation, this is a reasonable alternative I'd mention, while still defaulting to geohashing for its simplicity and direct fit with Redis's built-in geospatial support.
 
-> 📊 **Diagram:** `geohash-grid-matching.drawio` — Shows a city divided into geohash cells, a rider's pickup point in one cell, and the search expanding to that cell's 8 neighbors to find candidate drivers near a cell boundary.
+![Geohash grid matching diagram](../../01-concepts/diagrams/exports/geohash-grid-matching.png)
+*A city divided into geohash cells, a rider's pickup point in one cell, and the search expanding to that cell's 8 neighbors to find candidate drivers near a cell boundary.*
 
 ## 5. Real-Time Location Updates
 
