@@ -27,7 +27,8 @@ Every service emits structured JSON logs, and a **correlation ID** is generated 
 
 Distributed tracing (OpenTelemetry instrumentation, Jaeger backend) covers the ride-request journey as a single trace: gateway span → matching span → pricing span → trip-creation span, with the matching service's call to the location index and the pricing service's call to its rate-calculation logic as child spans. This is what answers "why did this specific ride take 4 seconds to match" in a way no aggregate metric can — the trace shows whether the 4 seconds was spent waiting on the location index, a slow pricing calculation, or queued behind other match requests.
 
-> 📊 **Diagram:** `distributed-trace-flow.drawio` — Shows a single ride-request trace as a waterfall: gateway (root span) → matching service → location-index lookup (child span) → pricing service → rate calculation (child span) → trip-creation, with each span's duration visible, making clear which step actually consumed the 4 seconds.
+![Distributed trace waterfall diagram](../01-concepts/diagrams/exports/distributed-trace-flow.png)
+*A single ride-request trace as a waterfall: gateway (root span) → matching service → pricing service → trip-creation, with each span's duration visible, making clear which step actually consumed the 4 seconds.*
 
 > ⚠️ **Warning:** Tracing 100% of requests at ride-sharing scale (potentially tens of thousands of ride requests per second at peak) is expensive in storage and overhead. A practical strategy: always trace requests that error or exceed a latency threshold (tail-based sampling), and sample a small percentage (e.g., 1%) of otherwise-healthy requests for baseline visibility — full fidelity exactly where it's most valuable, reduced cost everywhere else.
 

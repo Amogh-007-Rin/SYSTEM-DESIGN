@@ -24,7 +24,8 @@ A correlation ID is generated at the API gateway the moment an order-placement r
 
 One trace per order-placement request, with spans: `gateway` (root) → `cart.validate` → `inventory.check-stock` → `order.create` → `payment.charge` → `notification.enqueue`. Instrumented with OpenTelemetry SDKs in each service, exported to a Jaeger backend. This is what answers "which specific step made this order take 3 seconds" — something the RED dashboards alone only hint at via elevated Duration on one service.
 
-> 📊 **Diagram:** `distributed-trace-flow.drawio` — Shows the order-placement trace as a waterfall of six nested spans (gateway, cart, inventory, order, payment, notification), with span duration visible per service, making clear exactly where time was spent for one specific slow order.
+![Distributed trace waterfall diagram](../../01-concepts/diagrams/exports/distributed-trace-flow.png)
+*The order-placement trace as a waterfall of nested spans across services, with span duration visible per service — making clear exactly where time was spent for one specific slow order.*
 
 ## SLI/SLO and Alerting
 

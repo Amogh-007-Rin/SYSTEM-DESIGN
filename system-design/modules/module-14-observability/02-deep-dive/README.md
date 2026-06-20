@@ -43,7 +43,8 @@ The single most important alerting principle: **alert on symptoms, not causes.**
 
 > ⚠️ **Warning:** "Alert fatigue" — too many low-signal pages — actively degrades incident response: on-call engineers start treating all alerts as probably-noise and respond slower (or snooze them) even during a real incident. Every alert that fires and needed no action erodes trust in the next one. The fix is ruthlessly cutting cause-based and poorly-tuned threshold alerts down to a small set of high-confidence, symptom-based ones — not "page less" in the abstract.
 
-> 📊 **Diagram:** `metrics-alerting-pipeline.drawio` — Shows the pipeline from instrumented services exposing `/metrics`, through a Prometheus scrape, through alerting rules evaluated against SLO burn rate, to a page being routed to on-call — with a parallel path showing the same metrics feeding dashboards for diagnosis once paged.
+![Metrics and alerting pipeline diagram](../01-concepts/diagrams/exports/metrics-alerting-pipeline.png)
+*The pipeline from instrumented services exposing `/metrics`, through a Prometheus scrape and alerting rules evaluated against SLO burn rate, to a page routed to on-call — with the same metrics feeding dashboards for diagnosis once paged.*
 
 ---
 

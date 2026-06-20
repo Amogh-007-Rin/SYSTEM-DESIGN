@@ -8,7 +8,8 @@ A request enters your system, bounces across a dozen microservices, and the user
 
 ## The Three Pillars of Observability
 
-> 📊 **Diagram:** `three-pillars-observability.drawio` — Shows metrics, logs, and traces as three overlapping pillars feeding into a unified observability platform, each answering a different question about the same underlying request.
+![Three pillars of observability diagram](./diagrams/exports/three-pillars-observability.png)
+*Metrics, logs, and traces feeding into a unified observability platform, each answering a different question about the same underlying request.*
 
 - **Metrics** — numeric measurements aggregated over time (request rate, CPU usage, queue depth). Cheap to store and query, great for dashboards and alerting, but they tell you *that* something is wrong, not *why* for any single request.
 - **Logs** — discrete, timestamped event records, often with rich context (a stack trace, a user ID, a query). Expensive to store at high volume and hard to aggregate, but they're where the actual detail of "what happened" lives.
@@ -53,7 +54,8 @@ This module's [Coding Challenge 02](../04-exercises/coding-challenges/challenge-
 
 A single user request to an e-commerce checkout might touch an API gateway, an auth service, an inventory service, a payment service, and a notification service. **Distributed tracing** records this entire journey as one **trace**, made up of **spans** — each span representing one unit of work (e.g., "inventory-service: check stock") with a start time, duration, and parent-child relationship to other spans.
 
-> 📊 **Diagram:** `distributed-trace-flow.drawio` — Shows a single trace as a waterfall of nested spans across five services, with the root span (API gateway) spanning the full duration and child spans showing where time was actually spent downstream.
+![Distributed trace waterfall diagram](./diagrams/exports/distributed-trace-flow.png)
+*A single trace as a waterfall of nested spans across five services, with the root span (API gateway) spanning the full duration and child spans showing where time was actually spent downstream.*
 
 The mechanism that makes this possible across service and even process boundaries is **trace context propagation**: a trace ID (and the current span's ID, as its parent) is attached to outgoing requests — typically as HTTP headers — so the next service can continue the same trace instead of starting a disconnected one. **OpenTelemetry** is the vendor-neutral standard (instrumentation API + propagation format) for emitting this data; **Jaeger** and **Zipkin** are open-source backends that store and visualize traces once collected. In practice, teams instrument with OpenTelemetry's SDKs and point the exporter at whichever backend (Jaeger, Zipkin, or a commercial APM) they've standardized on — the instrumentation code doesn't need to change if the backend does.
 
