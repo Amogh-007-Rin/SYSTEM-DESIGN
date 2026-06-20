@@ -37,7 +37,8 @@ The hardest problem a CDN solves invisibly is: *of hundreds of PoPs, which one s
 | **Pull (origin-pull)** | The CDN fetches content from the origin lazily, on the first request for a given URL, then caches it for subsequent requests | The overwhelming default — low operational overhead, the CDN only ever stores what's actually being requested |
 | **Push** | You proactively upload content to the CDN ahead of time, before any user requests it | Content you know in advance needs to be available instantly everywhere with zero "first request is slow" penalty — e.g., a software release artifact or a high-profile video premiere |
 
-> 📊 **Diagram:** `push-vs-pull-cdn.drawio` — Shows pull CDN behavior (edge node fetches from origin lazily on first miss, then serves subsequent requests from cache) side-by-side with push CDN behavior (content is uploaded directly to every edge node ahead of any user request).
+![Pull CDN vs. push CDN comparison diagram](./diagrams/exports/push-vs-pull-cdn.png)
+*Pull CDN behavior (edge node fetches from origin lazily on first miss, then serves subsequent requests from cache) side-by-side with push CDN behavior (content uploaded directly to every edge node ahead of any user request).*
 
 > ⚠️ **Warning:** Pull CDNs mean the *first* request for any given asset after a cache miss (or after the edge cache expires) is slower — it has to round-trip to the origin. This is rarely a problem in practice because popular assets stay warm, but it's worth naming as a trade-off rather than presenting pull CDNs as strictly superior.
 
@@ -52,7 +53,8 @@ CDNs decide what to cache and for how long primarily through HTTP headers set by
 - **`Vary` header** — tells caches that the response differs based on a specific request header (commonly `Vary: Accept-Encoding` or `Vary: Accept-Language`), so the CDN must cache *separate* copies per distinct value of that header rather than serving one cached response to everyone.
 - **`stale-while-revalidate`** — an extension that lets the CDN serve a *stale* cached copy immediately while it asynchronously re-fetches a fresh one in the background, trading a small staleness window for the user never waiting on a cache-miss round trip at all.
 
-> 📊 **Diagram:** `cdn-request-flow.drawio` — Shows a cache hit (user → nearest edge node → response, origin never contacted) side-by-side with a cache miss (user → edge node → origin → edge node caches and returns response), illustrating why hit rate dominates perceived latency.
+![CDN request flow: cache hit vs. cache miss diagram](./diagrams/exports/cdn-request-flow.png)
+*A cache hit (user → nearest edge node → response, origin never contacted) side-by-side with a cache miss (user → edge node → origin → edge node caches and returns response) — illustrating why hit rate dominates perceived latency.*
 
 > 💡 **Note:** This is the same fundamental caching theory from [Module 05](../../module-05-caching/01-concepts/README.md) — TTL, eviction, freshness — applied one network hop closer to the user instead of in front of a database.
 
@@ -77,7 +79,8 @@ Because CDN edge nodes are numerous and geographically distributed, "delete this
 - **Video** — two delivery modes: **progressive download** (a single file streamed sequentially, simple but no quality adaptation) and **adaptive streaming** (HLS/DASH), where video is pre-encoded into multiple quality "renditions" and split into short segments, letting a player switch quality mid-stream as bandwidth changes. Covered in depth in the [deep dive](../../module-10-cdn/02-deep-dive/README.md).
 - **APIs** — even highly dynamic API responses can sometimes be cached for short TTLs (seconds, not hours) at the edge, absorbing traffic spikes without the origin ever seeing the duplicate requests; this only works for responses that are safe to be briefly stale and don't vary per-user in ways that defeat caching.
 
-> 📊 **Diagram:** `adaptive-bitrate-streaming.drawio` — Shows a video pre-encoded into multiple bitrate renditions (240p–1080p), each split into short segments, with a player's adaptive bitrate algorithm switching renditions mid-playback as its measured bandwidth changes.
+![Adaptive bitrate streaming diagram](./diagrams/exports/adaptive-bitrate-streaming.png)
+*A video pre-encoded into multiple bitrate renditions (1080p–240p), each split into short segments, with a player switching renditions mid-playback as its measured bandwidth changes.*
 
 ---
 

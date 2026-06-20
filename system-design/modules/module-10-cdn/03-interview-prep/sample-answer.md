@@ -26,7 +26,8 @@ Uploaded video is transcoded into a rendition ladder (e.g., 240p/400kbps up to 1
 
 **Manifest caching:** Manifests change less often than people assume (only on a re-encode or new rendition added) but I'd still give them a short TTL rather than treating them as fully immutable, since a manifest pointing at stale segment URLs is a worse failure than a manifest being a few seconds out of date.
 
-> 📊 **Diagram:** `cdn-request-flow.drawio` — Shows a viewer's player requesting the manifest, then requesting successive segments from the nearest edge node, with a cache hit on every segment after the first viewer in that PoP's region has already requested it.
+![Video CDN manifest and segment flow diagram](../01-concepts/diagrams/exports/video-cdn-segment-flow.png)
+*A viewer's player requesting the manifest, then requesting successive segments from the nearest edge node, with a cache hit on every segment after the first viewer in that PoP's region has already requested it.*
 
 ## Adaptive Bitrate Streaming
 
